@@ -3,7 +3,7 @@ package com.securenative.actions;
 import com.securenative.processors.BlacklistIp;
 import com.securenative.processors.DeleteBlacklistedIp;
 import com.securenative.processors.WhitelistIp;
-import com.securenative.snlogic.Logger;
+import com.securenative.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

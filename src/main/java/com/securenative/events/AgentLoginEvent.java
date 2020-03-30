@@ -2,9 +2,9 @@ package com.securenative.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.models.EventTypes;
-import com.securenative.snlogic.Logger;
-import com.securenative.snlogic.PackageManager;
-import com.securenative.snlogic.SnPackage;
+import com.securenative.Logger;
+import com.securenative.packagemanager.PackageManager;
+import com.securenative.packagemanager.SnPackage;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
