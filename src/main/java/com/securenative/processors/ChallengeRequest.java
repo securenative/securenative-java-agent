@@ -11,10 +11,10 @@ public class ChallengeRequest {
         }
         if (session.res != null) {
             // TODO write new headers
-            session.res.writeHead(200);
-            session.res.write(CHALLENGE_PAGE);
-            session.res.end();
-            session.res.sn_finished = true;
+//            session.res.writeHead(200);
+//            session.res.write(CHALLENGE_PAGE);
+//            session.res.end();
+//            session.res.sn_finished = true;
         }
     }
 }

@@ -24,14 +24,14 @@ public class BlockRequest {
             }
 
             // TODO write new headers
-            session.res.writeHead(403, headers);
-            session.res.write(BLOCK_PAGE);
-            session.res.end();
+//            session.res.writeHead(403, headers);
+//            session.res.write(BLOCK_PAGE);
+//            session.res.end();
 
             // TODO change headers
             //mark res finished
-            session.res.sn_finished = true;
-            session.res._header = null;
+//            session.res.sn_finished = true;
+//            session.res._header = null;
         }
     }
 }
