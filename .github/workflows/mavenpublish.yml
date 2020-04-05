@@ -12,9 +12,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -40,6 +38,6 @@ jobs:
         password: ${{ secrets.password }}
         format: maven2
         repository: maven-releases
-        coordinates: groupId=com.securenative.java artifactId=securenative-java-agent version={version}
+        coordinates: groupId=com.securenative.java artifactId=securenative-java-agent version=${{ github.ref }}
         assets: extension=jar
-        filename: ./target/securenative-java-agent-{version}.jar
+        filename: ./target/securenative-java-agent-${{ github.ref }}.jar
