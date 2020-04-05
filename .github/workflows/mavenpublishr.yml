@@ -4,6 +4,9 @@
 name: Maven Package
 
 on:
+  push:
+    branches:
+      - master
   release:
     types: [created]
 
@@ -28,3 +31,15 @@ jobs:
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Nexus Repository Publisher for GitHub Actions
+      uses: sonatype-nexus-community/nexus-repo-github-action@1.0.0
+      with:
+        serverUrl: http://163c6cdd.ngrok.io
+        username: securenative
+        password: ${{ secrets.password }}
+        format: maven2
+        repository: maven-releases
+        coordinates: groupId=com.securenative.java artifactId=securenative-java-agent version=${{ version }}
+        assets: extension=jar
+        filename: ./target/securenative-java-agent-${{ version }}.jar
