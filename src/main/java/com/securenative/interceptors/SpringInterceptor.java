@@ -19,6 +19,8 @@ public class SpringInterceptor extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // TODO [MATAN]: Is that means that these middlewares will run
+        // on every request?
         http.addFilterAfter(this.verifyWebhook, BasicAuthenticationFilter.class);
         http.addFilterAfter(this.verifyRequest, BasicAuthenticationFilter.class);
     }

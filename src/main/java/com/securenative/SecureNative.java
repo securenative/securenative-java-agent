@@ -20,6 +20,7 @@ import com.securenative.utils.Utils;
 import org.json.JSONObject;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class SecureNative {
@@ -142,16 +143,25 @@ public class SecureNative {
             // Update config
             this.handleConfigUpdate(res.config);
 
+            // TODO [MATAN]: About heartbeat manager and configuration updater
+            // I think there is a mix-up, the runnable should only describe the action you want to do, you shouldn't mix it up
+            // with the threading behaviors.
+            // You can get the java-standard way of scheduling jobs by using:
+            // Executors.newScheduledThreadPool(1).schedule(...)
+
             // Start heartbeat manager
             String heartbeatRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT);
+            // TODO [MATAN]: Unclear why using EventTypes.ERROR as health check event
             Event heartbeatEvent = EventFactory.createEvent(EventTypes.ERROR, this.snOptions.getAppName());
             heartBeatManager = new HeartBeatRunnable(this.eventManager, heartbeatRequestUrl, heartbeatEvent, this.snOptions.getHeartBeatInterval());
+            // TODO [MATAN]: Aren't you blocking the main thread with the heartbeat Thread.sleep()?
             heartBeatManager.run();
 
             // Start configuration updater
             String confRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG);
             Event confEvent = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
             configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTs);
+            // TODO [MATAN]: Aren't you blocking the main thread with the heartbeat Thread.sleep()?
             configurationUpdater.run();
 
             if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
@@ -224,6 +234,7 @@ public class SecureNative {
     }
 
     public void stopAgent() {
+        // TODO [MATAN]: I'm missing the logic that flushes the remaining events in queue
         if (this.isAgentStarted) {
             Logger.getLogger().debug("Attempting to stop agent");
             Boolean status = this.agentLogout();

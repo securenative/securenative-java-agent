@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ActionSet {
+    // TODO [MATAN]: seems like the fields will not get reassigned, so you can use "private final"
     private String name;
     private Set<ActionItem> ip;
     private Set<ActionItem> user;
@@ -25,6 +26,7 @@ public class ActionSet {
 
     public void add(String type, String item, @Nullable Long timeout) {
         if (timeout != null) {
+            // TODO [MATAN]: How do you ensure thread safety here?
             CompletableFuture.delayedExecutor(timeout, TimeUnit.SECONDS).execute(() -> {
                 this.delete(type, item, timeout);
             });
@@ -46,6 +48,9 @@ public class ActionSet {
             if (!this.isValidIP(item)) {
                 return false;
             }
+            // TODO [MATAN]: this won't work, you must implement equals on ActionItem
+            // boolean eq = Objects.equals(new ActionItem("1000", null), new ActionItem("1000", null));
+            // eq = false
             return this.ip.contains(new ActionItem(item, timeout));
         } else if (type.equals(SetType.USER.name())) {
             return this.user.contains(new ActionItem(item, timeout));
@@ -57,6 +62,9 @@ public class ActionSet {
 
     public void delete(String type, String item, @Nullable Long timeout) {
         if (type.equals(SetType.IP.name())) {
+            // TODO [MATAN]: this won't work, you must implement equals on ActionItem
+            // boolean eq = Objects.equals(new ActionItem("1000", null), new ActionItem("1000", null));
+            // eq = false
             this.ip.remove(new ActionItem(item, timeout));
         } else if (type.equals(SetType.USER.name())) {
             this.user.remove(new ActionItem(item, timeout));

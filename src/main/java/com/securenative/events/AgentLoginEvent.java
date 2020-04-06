@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
 
+    // TODO [MATAN]: Java style is to make those private and create Getters
     @JsonProperty("eventType") public String eventType;
     @JsonProperty("ts") public Long ts;
     @JsonProperty("package") public SnPackage snPackage;

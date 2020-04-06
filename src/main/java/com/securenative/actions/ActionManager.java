@@ -15,6 +15,7 @@ public class ActionManager {
     private static Map<String, Class<?>[]> actionProcessors = new HashMap<>();
 
     public ActionManager() {
+        // TODO [MATAN]: Avoid using hardcoded stings, use enums instead
         ActionManager.actionProcessors.put("block_ip", new Class<?>[]{BlacklistIp.class});
         ActionManager.actionProcessors.put("unblock_ip", new Class<?>[]{DeleteBlacklistedIp.class});
         ActionManager.actionProcessors.put("allow_ip", new Class<?>[]{WhitelistIp.class});

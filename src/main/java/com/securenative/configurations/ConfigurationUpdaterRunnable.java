@@ -6,13 +6,12 @@ import com.securenative.Logger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-// TODO [MATAN]: Why using a runnable? you can get a pretty robust implementation by using: Executors.newScheduledThreadPool()
-
 public class ConfigurationUpdaterRunnable implements Runnable {
+    // TODO [MATAN]: private final
     private EventManager eventManager;
     private String requestUrl;
     private Event event;
-    private Thread worker;
+    private Thread worker; // TODO [MATAN]: You don't need any thread reference here
     private AtomicBoolean running = new AtomicBoolean(false);
     private long interval;
 
@@ -34,6 +33,7 @@ public class ConfigurationUpdaterRunnable implements Runnable {
                 Thread.currentThread().interrupt();
                 Logger.getLogger().debug("Thread was interrupted, Closing configuration updater");
             }
+            // TODO [MATAN]: Where are you updating the configuration?
             // TODO run thread
             // TODO send event
         }

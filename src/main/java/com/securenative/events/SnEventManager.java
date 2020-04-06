@@ -40,6 +40,7 @@ public class SnEventManager implements EventManager {
         this.utils = new Utils();
         this.options = options;
         events = new ConcurrentLinkedQueue<>();
+        // TODO [MATAN]: isNullOrEmpty is a static method
         if (this.utils.isNullOrEmpty(apiKey) || options == null) {
             throw new SecureNativeSDKException("You must pass a valid api key");
         }

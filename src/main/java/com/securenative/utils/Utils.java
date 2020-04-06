@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+// TODO [MATAN]: All methods should be static
 public class Utils {
     private static String[] ipHeaders = {"x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"};
     public String COOKIE_NAME = "_sn";

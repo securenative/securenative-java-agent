@@ -7,6 +7,7 @@ public class ModuleManager {
     public String frameworkVersion;
 
     public ModuleManager(SnPackage snPackage) {
+        // TODO [MATAN]: why not for (Dependency d : snPackage.getDependencies()) ?
         for (int i = 0; i < snPackage.getDependencies().length; i++) {
             if (snPackage.getDependency(i).getName().toLowerCase().contains("spring")) {
                 this.framework = snPackage.getDependency(i).getName();

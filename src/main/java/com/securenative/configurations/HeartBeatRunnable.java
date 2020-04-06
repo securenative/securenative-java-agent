@@ -7,14 +7,13 @@ import com.securenative.events.EventManager;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-// TODO [MATAN]: Why using a runnable? you can get a pretty robust implementation by using: Executors.newScheduledThreadPool()
-
 public class HeartBeatRunnable implements Runnable {
+    // TODO [MATAN]: private finals
     private EventManager eventManager;
     private String requestUrl;
     private Event event;
     private long interval;
-    private Thread worker;
+    private Thread worker; // TODO [MATAN]: You don't need any thread reference here
     private AtomicBoolean running = new AtomicBoolean(false);
 
     public HeartBeatRunnable(EventManager eventManager, String requestUrl, Event event, long interval) {

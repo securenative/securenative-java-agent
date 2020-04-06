@@ -5,6 +5,7 @@ import com.securenative.SecureNative;
 
 public class InterceptorManager {
     public static void applyModuleInterceptors(ModuleManager moduleManager, SecureNative secureNative) {
+        // TODO [MATAN]: I don't get this if statement, your'e doing the same thing afterwards
         if (moduleManager.getFramework().toLowerCase().contains("spring")) {
             new SpringInterceptor(secureNative);
             new HttpInterceptor(secureNative);

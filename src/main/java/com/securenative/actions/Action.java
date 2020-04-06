@@ -3,6 +3,7 @@ package com.securenative.actions;
 import java.util.List;
 
 public class Action {
+    // TODO [MATAN]: I recommend to set the properties to "private final" either way not public
     public String name;
     public long ttl;
     public long ts;
