@@ -226,7 +226,9 @@ public class SecureNative {
             } catch (Exception e){
                 long backoff = (long)(Math.ceil(Math.random() *10) + 1) * 1000;
                 Logger.getLogger().debug(String.format("Failed to start agent, will retry after backoff %s", backoff));
+                // TODO [MATAN]: This is not the cleanest way for doing retries in java
                 CompletableFuture.delayedExecutor(backoff, TimeUnit.MILLISECONDS).execute(this::startAgent);
+                // TODO [MATAN]: set this.isAgentStarted = false just to be on the safe side and eliminate future bugs
             }
         } else {
             Logger.getLogger().debug("Agent already started, skipping");

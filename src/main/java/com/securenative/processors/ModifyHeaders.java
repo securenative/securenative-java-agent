@@ -21,6 +21,7 @@ public class ModifyHeaders implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        // TODO [MATAN]: how changes to the rule are propagated to this class
         httpServletResponse.setHeader(this.rule.data.getKey(), this.rule.data.getValue());
         filterChain.doFilter(servletRequest, servletResponse);
     }

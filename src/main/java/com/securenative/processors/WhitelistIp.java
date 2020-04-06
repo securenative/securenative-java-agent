@@ -6,6 +6,7 @@ import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
 
 public class WhitelistIp {
+    // TODO [MATAN]: constructor missing
     private Action action;
 
     public void apply() {

@@ -12,6 +12,9 @@ import java.lang.instrument.Instrumentation;
 
 public class SecureNativeAgent {
     public static void premain(String args, Instrumentation inst) {
+        // TODO [MATAN]: wrap the whole logic in try-catch clause to make sure you won't crash the
+        // hosting app
+
         // Set package information
         String PACKAGE_FILE_NAME = "/pom.xml";
         SnPackage appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));

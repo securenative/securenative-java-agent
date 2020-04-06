@@ -15,6 +15,7 @@ public class RuleManager {
         return r;
     }
 
+    // TODO [MATAN]: ghost?
     private void registerRule(Rule rule) {
         rules.add(rule);
     }
@@ -34,12 +35,14 @@ public class RuleManager {
             String method = interception.method;
             String processor = interception.processor;
 
-
+            // TODO [MATAN]: unsafe, you need to check for nil reference and the length
             String[] m = method.split(":");
             String func = m[0];
             String listener = m[1];
 
             Rule r = new Rule(data, new RuleInterception(module, func, processor));  // TODO add process session
+
+            // TODO [MATAN]: missing logic?
         }
     }
 }

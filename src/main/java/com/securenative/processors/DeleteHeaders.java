@@ -19,6 +19,7 @@ public class DeleteHeaders implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
         HttpHeaders headers = httpRequest.getHeaders();
+        // TODO [MATAN]: how changes to the rules are propagated to this class
         headers.remove(this.rule.data.value);
 
         return clientHttpRequestExecution.execute(httpRequest, bytes);

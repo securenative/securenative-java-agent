@@ -22,7 +22,7 @@ public class BlockRequest {
                 headers.put("Access-Control-Allow-Headers", "*");
                 headers.put("content-type", "securenative/block");
             }
-
+            // TODO [MATAN]: where is the blocking logic?
             // TODO write new headers
 //            session.res.writeHead(403, headers);
 //            session.res.write(BLOCK_PAGE);

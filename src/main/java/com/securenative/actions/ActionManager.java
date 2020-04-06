@@ -29,6 +29,8 @@ public class ActionManager {
                     try {
                         Class<?> pros = Class.forName(processor.getName());
                         Constructor<?> ctor = pros.getConstructor();
+                        // TODO [MATAN]: if I got it right these are processors, your'e initializing the ctor,
+                        // but there are processors with no empty constructor
                         ctor.newInstance();
                     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                         Logger.getLogger().debug(String.format("Could not initialize processor %s; %s", processor.getName(), e));
