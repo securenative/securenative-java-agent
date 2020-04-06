@@ -4,7 +4,10 @@ import com.securenative.events.Event;
 import com.securenative.Logger;
 import com.securenative.events.EventManager;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+// TODO [MATAN]: Why using a runnable? you can get a pretty robust implementation by using: Executors.newScheduledThreadPool()
 
 public class HeartBeatRunnable implements Runnable {
     private EventManager eventManager;

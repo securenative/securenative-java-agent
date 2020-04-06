@@ -6,6 +6,8 @@ import com.securenative.Logger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+// TODO [MATAN]: Why using a runnable? you can get a pretty robust implementation by using: Executors.newScheduledThreadPool()
+
 public class ConfigurationUpdaterRunnable implements Runnable {
     private EventManager eventManager;
     private String requestUrl;
