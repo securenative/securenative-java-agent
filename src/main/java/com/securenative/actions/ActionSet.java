@@ -1,9 +1,11 @@
 package com.securenative.actions;
 
 import com.google.common.net.InetAddresses;
+import com.securenative.Logger;
 import com.securenative.models.ActionItem;
 import com.securenative.models.SetType;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +35,8 @@ public class ActionSet {
         if (type.equals(SetType.IP.name())) {
             if (this.isValidIP(item)) {
                 this.ip.add(new ActionItem(item, timeout));
+            } else {
+                Logger.getLogger().warn(String.format("Not a valid ip range! %s", item));
             }
         } else if (type.equals(SetType.USER.name())) {
             this.user.add(new ActionItem(item, timeout));
@@ -42,17 +46,7 @@ public class ActionSet {
     }
 
     public boolean has(String type, String item, @Nullable Long timeout) {
-        if (type.equals(SetType.IP.name())) {
-            if (!this.isValidIP(item)) {
-                return false;
-            }
-            return this.ip.contains(new ActionItem(item, timeout));
-        } else if (type.equals(SetType.USER.name())) {
-            return this.user.contains(new ActionItem(item, timeout));
-        } else if (type.equals(SetType.COUNTRY.name())) {
-            return this.country.contains(new ActionItem(item, timeout));
-        }
-        return false;
+        return this.contains(type, item, timeout);
     }
 
     public void delete(String type, String item, @Nullable Long timeout) {
@@ -66,6 +60,11 @@ public class ActionSet {
     }
 
     private boolean isValidIP(String ip) {
+        if (ip.contains("/")) {
+            // subnet
+            String subnet[] = ip.split("/");
+            return InetAddresses.isInetAddress(subnet[0]);
+        }
         return InetAddresses.isInetAddress(ip);
     }
 
@@ -83,5 +82,44 @@ public class ActionSet {
 
     public Set<ActionItem> getCountry() {
         return country;
+    }
+
+    public Boolean contains(String type, String item, Long timeout) {
+        ActionItem ai = new ActionItem(item, timeout);
+        if (type.equals(SetType.IP.name())) {
+            for (ActionItem actionItem : this.ip) {
+                if (actionItem.getItem().contains("/")) {
+                    return subnetContains(ai.getItem(), actionItem.getItem()) &&
+                            actionItem.getTimeout() == timeout;
+                } else {
+                    if (actionItem.equals(ai)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        if (type.equals(SetType.COUNTRY.name())) {
+            for (ActionItem actionItem : this.country) {
+                if (actionItem.equals(ai)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (type.equals(SetType.USER.name())) {
+            for (ActionItem actionItem : this.user) {
+                if (actionItem.equals(ai)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private boolean subnetContains(String ip, String subnet) {
+        IpAddressMatcher ipAddressMatcher = new IpAddressMatcher(subnet);
+        return ipAddressMatcher.matches(ip);
     }
 }

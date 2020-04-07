@@ -2,6 +2,8 @@ package com.securenative.models;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class ActionItem {
     private String item;
     private Long timeout;
@@ -25,5 +27,19 @@ public class ActionItem {
 
     public void setTimeout(Long timeout) {
         this.timeout = timeout;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ActionItem)) return false;
+        ActionItem that = (ActionItem) o;
+        return Objects.equals(item, that.item) &&
+                Objects.equals(timeout, that.timeout);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item, timeout);
     }
 }
