@@ -233,21 +233,6 @@ public class SecureNative {
         }
     }
 
-    public void track(Event event) {
-        Logger.getLogger().info("Track event call");
-        this.eventManager.sendAsync(event, this.snOptions.getApiUrl() + "/track");
-    }
-
-    public RiskResult verify(Event event) {
-        Logger.getLogger().info("Verify event call");
-        return this.eventManager.sendSync(event, this.snOptions.getApiUrl() + "/verify");
-    }
-
-    public RiskResult flow(long flowId, Event event) { // FOR FUTURE PURPOSES
-        Logger.getLogger().info("Flow event call");
-        return this.eventManager.sendSync(event, this.snOptions.getApiUrl() + "/flow/" + flowId);
-    }
-
     public String getApiKey() {
         return apiKey;
     }
