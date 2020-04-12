@@ -6,24 +6,30 @@ import java.util.List;
 public class RuleManager {
     private static List<Rule> rules = new ArrayList<>();
 
-    public List<Rule> getRules(String method, String listener) {
+    public List<Rule> getAllRules() {
+        return rules;
+    }
+
+    public List<Rule> getRules(String method) {
         List<Rule> r = new ArrayList<>();
         for (Rule rule : rules) {
-            // TODO filter rules according to
+            if (rule.interception.method.equals(method)) {
+                r.add(rule);
+            }
         }
 
         return r;
     }
 
-    private void registerRule(Rule rule) {
+    public void registerRule(Rule rule) {
         rules.add(rule);
     }
 
-    public static void clean() {
+    public void clean() {
         rules.clear();
     }
 
-    public static void enforceRules(List<Rule> rules) {
+    public void enforceRules(List<Rule> rules) {
         // clean previous rules
         clean();
 

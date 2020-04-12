@@ -8,14 +8,9 @@ import com.securenative.packagemanager.PackageManager;
 import com.securenative.packagemanager.SnPackage;
 import com.securenative.utils.Utils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SecureNativeTest {
-    @BeforeClass
-    public static void setup() {
-    }
-
     @Test(expected = SecureNativeSDKException.class)
     public void invalidInitialization() throws SecureNativeSDKException {
         SecureNativeOptions config = ConfigurationManager.getConfig();

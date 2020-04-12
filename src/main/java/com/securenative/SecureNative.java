@@ -37,6 +37,7 @@ public class SecureNative {
     private String apiKey;
     private Utils utils;
     private ObjectMapper mapper;
+    private RuleManager ruleManager;
 
     private long configUpdateTs = 0;
     private ConfigurationUpdaterRunnable configurationUpdater;
@@ -51,6 +52,7 @@ public class SecureNative {
         this.eventManager = new SnEventManager(this.apiKey, this.snOptions);
         this.moduleManager = moduleManager;
         this.snOptions = snOptions;
+        this.ruleManager = new RuleManager();
         this.mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         if (!this.snOptions.isAgentDisable()) {
@@ -107,7 +109,7 @@ public class SecureNative {
 
         // enforce all rules
         if (config.getRules() != null) {
-            RuleManager.enforceRules(config.getRules());
+            this.ruleManager.enforceRules(config.getRules());
         }
 
         // enforce all actions

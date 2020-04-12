@@ -3,16 +3,11 @@ package com.securenative;
 import com.securenative.actions.ActionSet;
 import com.securenative.models.SetType;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
 public class ActionSetTest {
-    @BeforeClass
-    public static void setup() {
-    }
-
     @Test
     public void blockUserIpCountryForever() {
         String ip = "10.0.0.1";

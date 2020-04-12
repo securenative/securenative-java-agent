@@ -11,14 +11,19 @@ import java.nio.file.Paths;
 
 public class ConfigurationManager {
     static SecureNativeOptions config;
-    static String CONFIG_FILE = "securenative.json";
+    static String CONFIG_FILE = "securenative-test.json";
+
+    // For test purposes
+    public ConfigurationManager(String configFile) {
+        CONFIG_FILE = configFile;
+    }
 
     public static SecureNativeOptions getConfig() {
         if (config == null) {
             SecureNativeOptions fileConfig = readConfigFile();
             config = new SecureNativeOptions();
 
-            if (fileConfig != null && !fileConfig.getApiUrl().isEmpty()) {
+            if (fileConfig != null && fileConfig.getApiUrl() != null) {
                 config.setApiUrl(fileConfig.getApiUrl());
             } else {
                 if (System.getenv("SECURENATIVE_API_URL") != null) {
@@ -28,7 +33,7 @@ public class ConfigurationManager {
                 }
             }
 
-            if (fileConfig != null && !fileConfig.getApiKey().isEmpty()) {
+            if (fileConfig != null && fileConfig.getApiKey() != null) {
                 config.setApiKey(fileConfig.getApiKey());
             } else {
                 if (System.getenv("SECURENATIVE_API_KEY") != null) {
@@ -38,7 +43,7 @@ public class ConfigurationManager {
                 }
             }
 
-            if (fileConfig != null && !fileConfig.getAppName().isEmpty()) {
+            if (fileConfig != null && fileConfig.getAppName() != null) {
                 config.setAppName(fileConfig.getAppName());
             } else {
                 if (System.getenv("SECURENATIVE_APP_NAME") != null) {
@@ -78,7 +83,7 @@ public class ConfigurationManager {
                 }
             }
 
-            if (fileConfig != null && fileConfig.getAutoSend() == null) {
+            if (fileConfig != null) {
                 config.setAutoSend(fileConfig.getAutoSend());
             } else {
                 if (System.getenv("SECURENATIVE_AUTO_SEND") != null) {
@@ -88,7 +93,7 @@ public class ConfigurationManager {
                 }
             }
 
-            if (fileConfig != null && fileConfig.getAgentDisable() == null) {
+            if (fileConfig != null) {
                 config.setAgentDisable(fileConfig.getAgentDisable());
             } else {
                 if (System.getenv("SECURENATIVE_DISABLE") != null) {
@@ -98,7 +103,7 @@ public class ConfigurationManager {
                 }
             }
 
-            if (fileConfig != null && fileConfig.getDebugMode() == null) {
+            if (fileConfig != null) {
                 config.setDebugMode(fileConfig.getDebugMode());
             } else {
                 if (System.getenv("SECURENATIVE_DEBUG_MODE") != null) {
