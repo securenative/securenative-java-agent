@@ -16,7 +16,7 @@ public class BlacklistIp {
         if (this.action.getValues().size() > 0) {
             this.action.getValues().forEach(value -> {
                 Logger.getLogger().debug(String.format("Blacklisting ip: %s", value));
-                ActionList.blackList.add(SetType.IP.toString(), value, this.action.ttl);
+                ActionList.blackList.add(SetType.IP.toString(), value, this.action.getTtl());
             });
         }
     }

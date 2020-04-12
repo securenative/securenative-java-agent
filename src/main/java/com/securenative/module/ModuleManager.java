@@ -1,5 +1,6 @@
 package com.securenative.module;
 
+import com.securenative.models.Dependency;
 import com.securenative.packagemanager.SnPackage;
 
 public class ModuleManager {
@@ -7,10 +8,10 @@ public class ModuleManager {
     public String frameworkVersion;
 
     public ModuleManager(SnPackage snPackage) {
-        for (int i = 0; i < snPackage.getDependencies().length; i++) {
-            if (snPackage.getDependency(i).getName().toLowerCase().contains("spring")) {
-                this.framework = snPackage.getDependency(i).getName();
-                this.frameworkVersion = snPackage.getDependency(i).getVersion();
+        for (Dependency d : snPackage.getDependencies()) {
+            if (d.getName().toLowerCase().contains("spring")) {
+                this.framework = d.getName();
+                this.frameworkVersion = d.getVersion();
             }
 
             // Default framework

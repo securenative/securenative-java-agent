@@ -7,8 +7,6 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -16,71 +14,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class Utils {
-    private static String[] ipHeaders = {"x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"};
-    public String COOKIE_NAME = "_sn";
-    public final String SN_HEADER = "x-securenative";
-    public final String USERAGENT_HEADER = "user-agent";
-    private final String HMAC_SHA1_ALGORITHM = "HmacSHA512";
-    private Pattern VALID_IPV6_PATTERN = Pattern.compile("([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}", Pattern.CASE_INSENSITIVE);
-    private final int AES_KEY_SIZE = 32;
+    public static String COOKIE_NAME = "_sn";
+    private static final String HMAC_SHA1_ALGORITHM = "HmacSHA512";
+    private static final int AES_KEY_SIZE = 32;
 
-
-    public Utils() {
-    }
-
-
-    public String remoteIpFromRequest(Function<String, String> headerExtractor) {
-        Logger.getLogger().info("Extracting remote ip from requests");
-        Optional<String> bestCandidate = Optional.empty();
-        String header = "";
-        for (int i = 0; i < ipHeaders.length; i++) {
-            List<String> candidates = Arrays.asList();
-            header = headerExtractor.apply(ipHeaders[i]);
-            if (!this.isNullOrEmpty(header)) {
-                candidates = Arrays.stream(header.split(",")).map(s -> s.trim()).filter(s -> !this.isNullOrEmpty(s) &&
-                        (isValidInet4Address(s) || this.isIpV6Address(s)) &&
-                        !isPrivateIPAddress(s)).collect(Collectors.toList());
-                if (candidates.size() > 0) {
-                    Logger.getLogger().info(String.format("Extracted remote ip %s", candidates.get(0)));
-                    return candidates.get(0);
-                }
-            }
-            if (!bestCandidate.isPresent()) {
-                bestCandidate = candidates.stream().filter(x -> isLoopBack(x)).findFirst();
-            }
-        }
-        Logger.getLogger().info("couldn't extract remote ip, returning 127.0.0.1");
-        return "127.0.0.1";
-    }
-
-
-    private boolean isLoopBack(String ip) {
-        try {
-            return InetAddress.getByName(ip).isLoopbackAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private boolean isPrivateIPAddress(String ipAddress) {
-        InetAddress ia = null;
-        try {
-            InetAddress ad = InetAddress.getByName(ipAddress);
-            byte[] ip = ad.getAddress();
-            ia = InetAddress.getByAddress(ip);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return ia.isSiteLocalAddress();
-    }
-
-    private String toHexString(byte[] bytes) {
+    private static String toHexString(byte[] bytes) {
         Formatter formatter = new Formatter();
 
         for (byte b : bytes) {
@@ -90,7 +30,7 @@ public class Utils {
         return formatter.toString();
     }
 
-    private String calculateRFC2104HMAC(String data, String key) throws SecureNativeSDKException {
+    private static String calculateRFC2104HMAC(String data, String key) throws SecureNativeSDKException {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(), HMAC_SHA1_ALGORITHM);
             Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
@@ -101,50 +41,30 @@ public class Utils {
         }
     }
 
-    private String calculateSignature(String payload, String apikey) {
+    private static String calculateSignature(String payload, String apikey) {
         if (isNullOrEmpty(payload)) {
             return null;
         }
         try {
-            return this.calculateRFC2104HMAC(payload, apikey);
+            return calculateRFC2104HMAC(payload, apikey);
         } catch (SecureNativeSDKException e) {
             return null;
         }
     }
 
-    public boolean isVerifiedSnRequest(String payload, String hedaerSignature, String apiKey) {
-        String signed = this.calculateSignature(payload, apiKey);
-        if (isNullOrEmpty(signed) || isNullOrEmpty(hedaerSignature)) {
+    public static boolean isVerifiedSnRequest(String payload, String headerSignature, String apiKey) {
+        String signed = calculateSignature(payload, apiKey);
+        if (isNullOrEmpty(signed) || isNullOrEmpty(headerSignature)) {
             return false;
         }
-        return hedaerSignature.equals(signed);
+        return headerSignature.equals(signed);
     }
 
     public static boolean isNullOrEmpty(final String s) {
         return s == null || s.length() == 0;
     }
 
-    private boolean isValidInet4Address(String ip) {
-        String[] groups = ip.split("\\.");
-        if (groups.length != 4)
-            return false;
-        try {
-            return Arrays.stream(groups)
-                    .filter(s -> s.length() > 1 && s.startsWith("0"))
-                    .map(Integer::parseInt)
-                    .filter(i -> (i >= 0 && i <= 255))
-                    .count() == 4;
-
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private boolean isIpV6Address(String ipAddress) {
-        return this.VALID_IPV6_PATTERN.matcher(ipAddress).matches();
-    }
-
-    public String decrypt(String s, String key)
+    public static String decrypt(String s, String key)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException,
             IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         Logger.getLogger().info("Starting to decrypt " + s);
@@ -161,7 +81,7 @@ public class Utils {
         return new String(cipher.doFinal(cipherText), "UTF-8").trim();
     }
 
-    private byte[] hexToByteArray(String s) {
+    private static byte[] hexToByteArray(String s) {
         byte[] retValue = null;
         if (s != null && s.length() != 0) {
             retValue = new byte[s.length() / 2];
@@ -183,17 +103,6 @@ public class Utils {
             for (int j = 1; j >= 0; j--)
                 hexBuffer.append(HEX[(b >> (j * 4)) & 0xF]);
         return hexBuffer.toString();
-    }
-
-    private byte[] pad(byte[] buf, int size) {
-        int bufLen = buf.length;
-        int padLen = size - bufLen % size;
-        byte[] padded = new byte[bufLen + padLen];
-        padded = Arrays.copyOf(buf, bufLen + padLen);
-        for (int i = 0; i < padLen; i++) {
-            padded[bufLen + i] = (byte) padLen;
-        }
-        return padded;
     }
 
     public static String encrypt(String text, String key)

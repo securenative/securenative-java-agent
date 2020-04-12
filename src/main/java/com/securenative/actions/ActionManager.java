@@ -1,5 +1,6 @@
 package com.securenative.actions;
 
+import com.securenative.models.ProcessesType;
 import com.securenative.processors.BlacklistIp;
 import com.securenative.processors.DeleteBlacklistedIp;
 import com.securenative.processors.WhitelistIp;
@@ -15,9 +16,9 @@ public class ActionManager {
     private static Map<String, Class<?>[]> actionProcessors = new HashMap<>();
 
     public ActionManager() {
-        ActionManager.actionProcessors.put("block_ip", new Class<?>[]{BlacklistIp.class});
-        ActionManager.actionProcessors.put("unblock_ip", new Class<?>[]{DeleteBlacklistedIp.class});
-        ActionManager.actionProcessors.put("allow_ip", new Class<?>[]{WhitelistIp.class});
+        ActionManager.actionProcessors.put(ProcessesType.BLOCK_IP.getType(), new Class<?>[]{BlacklistIp.class});
+        ActionManager.actionProcessors.put(ProcessesType.UNBLOCK_IP.getType(), new Class<?>[]{DeleteBlacklistedIp.class});
+        ActionManager.actionProcessors.put(ProcessesType.ALLOW_IP.getType(), new Class<?>[]{WhitelistIp.class});
     }
 
     public static void enforceActions(List<Action> actions) {

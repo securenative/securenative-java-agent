@@ -3,10 +3,10 @@ package com.securenative.actions;
 import java.util.List;
 
 public class Action {
-    public String name;
-    public long ttl;
-    public long ts;
-    public List<String> values;
+    private String name;
+    private long ttl;
+    private long ts;
+    private List<String> values;
 
     public Action(String name, long ttl, long ts, List<String> values) {
         this.name = name;

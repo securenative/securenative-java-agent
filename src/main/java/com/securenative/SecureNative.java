@@ -35,7 +35,6 @@ public class SecureNative {
     private SnEventManager eventManager;
     private SecureNativeOptions snOptions;
     private String apiKey;
-    private Utils utils;
     private ObjectMapper mapper;
     private RuleManager ruleManager;
 
@@ -46,7 +45,6 @@ public class SecureNative {
 
     public SecureNative(ModuleManager moduleManager, SecureNativeOptions snOptions) throws SecureNativeSDKException {
         this.apiKey = snOptions.getApiKey();
-        this.utils = new Utils();
         this.snOptions = initializeOptions(snOptions);
         Logger.setLoggingEnable(this.snOptions.getDebugMode());
         this.eventManager = new SnEventManager(this.apiKey, this.snOptions);
@@ -123,10 +121,6 @@ public class SecureNative {
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.ERROR);
         Event event = EventFactory.createEvent(EventTypes.ERROR, err.toString());
         this.eventManager.sendAsync(event, requestUrl);
-    }
-
-    public String getDefaultCookieName() {
-        return this.utils.COOKIE_NAME;
     }
 
     public String agentLogin() {
@@ -219,6 +213,7 @@ public class SecureNative {
                 long backoff = (long)(Math.ceil(Math.random() *10) + 1) * 1000;
                 Logger.getLogger().debug(String.format("Failed to start agent, will retry after backoff %s", backoff));
                 CompletableFuture.delayedExecutor(backoff, TimeUnit.MILLISECONDS).execute(this::startAgent);
+                isAgentStarted = false;
             }
         } else {
             Logger.getLogger().debug("Agent already started, skipping");
