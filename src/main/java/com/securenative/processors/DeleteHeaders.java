@@ -9,7 +9,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
-public class DeleteHeaders implements ClientHttpRequestInterceptor {
+public class DeleteHeaders implements Processor, ClientHttpRequestInterceptor {
     private Rule rule;
 
     public DeleteHeaders(Rule rule) {
@@ -22,5 +22,10 @@ public class DeleteHeaders implements ClientHttpRequestInterceptor {
         headers.remove(this.rule.data.value);
 
         return clientHttpRequestExecution.execute(httpRequest, bytes);
+    }
+
+    @Override
+    public void apply() {
+
     }
 }

@@ -5,13 +5,14 @@ import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
 
-public class WhitelistIp {
+public class WhitelistIp implements Processor {
     private Action action;
 
     public WhitelistIp(Action action) {
         this.action = action;
     }
 
+    @Override
     public void apply() {
         if (this.action.getValues() != null) {
             this.action.getValues().forEach(value -> {

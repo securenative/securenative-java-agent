@@ -6,7 +6,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ModifyHeaders implements Filter {
+public class ModifyHeaders implements Processor, Filter {
     private Rule rule;
 
     public ModifyHeaders(Rule rule) {
@@ -27,6 +27,11 @@ public class ModifyHeaders implements Filter {
 
     @Override
     public void destroy() {
+
+    }
+
+    @Override
+    public void apply() {
 
     }
 }

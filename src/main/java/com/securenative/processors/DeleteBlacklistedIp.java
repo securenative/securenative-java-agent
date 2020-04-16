@@ -5,13 +5,14 @@ import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
 
-public class DeleteBlacklistedIp {
+public class DeleteBlacklistedIp implements Processor {
     private Action action;
 
     public DeleteBlacklistedIp(Action action) {
         this.action = action;
     }
 
+    @Override
     public void apply() {
         if (this.action.getValues() != null) {
             this.action.getValues().forEach(value -> {
