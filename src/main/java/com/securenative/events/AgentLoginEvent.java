@@ -13,15 +13,24 @@ import java.time.ZonedDateTime;
 public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
 
-    @JsonProperty("eventType") public String eventType;
-    @JsonProperty("ts") public Long ts;
-    @JsonProperty("package") public SnPackage snPackage;
-    @JsonProperty("appName") public String appName;
-    @JsonProperty("process") public SnProcess process;
-    @JsonProperty("runtime") public SnRuntime snRuntime;
-    @JsonProperty("os") public Os os;
-    @JsonProperty("framework") public Framework framework;
-    @JsonProperty("agent") public Agent agent;
+    @JsonProperty("eventType")
+    private String eventType;
+    @JsonProperty("ts")
+    private Long ts;
+    @JsonProperty("package")
+    private SnPackage snPackage;
+    @JsonProperty("appName")
+    private String appName;
+    @JsonProperty("process")
+    private SnProcess process;
+    @JsonProperty("runtime")
+    private SnRuntime snRuntime;
+    @JsonProperty("os")
+    private Os os;
+    @JsonProperty("framework")
+    private Framework framework;
+    @JsonProperty("agent")
+    private Agent agent;
 
     public AgentLoginEvent(String framework, String frameworkVersion, String appName) {
         String cwd = System.getProperty("user.dir");
@@ -62,6 +71,38 @@ public class AgentLoginEvent implements Event {
     @Override
     public String getEventType() {
         return this.eventType;
+    }
+
+    public Long getTs() {
+        return ts;
+    }
+
+    public SnPackage getSnPackage() {
+        return snPackage;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public SnProcess getProcess() {
+        return process;
+    }
+
+    public SnRuntime getSnRuntime() {
+        return snRuntime;
+    }
+
+    public Os getOs() {
+        return os;
+    }
+
+    public Framework getFramework() {
+        return framework;
+    }
+
+    public Agent getAgent() {
+        return agent;
     }
 }
 

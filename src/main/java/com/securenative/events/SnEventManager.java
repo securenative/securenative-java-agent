@@ -27,7 +27,6 @@ public class SnEventManager implements EventManager {
     private final String SN_VERSION = "SN-Version";
     private BoundRequestBuilder asyncClient;
     private String apiKey;
-    private Utils utils;
     private ExecutorService executor;
     private ConcurrentLinkedQueue<Message> events;
     private ObjectMapper mapper;
@@ -37,10 +36,9 @@ public class SnEventManager implements EventManager {
     RiskResult defaultRiskResult = new RiskResult(RiskLevel.low.name(), 0.0, new String[0]);
 
     public SnEventManager(String apiKey, SecureNativeOptions options) throws SecureNativeSDKException {
-        this.utils = new Utils();
         this.options = options;
         events = new ConcurrentLinkedQueue<>();
-        if (this.utils.isNullOrEmpty(apiKey) || options == null) {
+        if (Utils.isNullOrEmpty(apiKey) || options == null) {
             throw new SecureNativeSDKException("You must pass a valid api key");
         }
         this.asyncClient = initializeAsyncHttpClient(options);
@@ -81,7 +79,7 @@ public class SnEventManager implements EventManager {
                 events.add(new Message(event, response.getUri().toUrl()));
             }
             String responseBody = response.getResponseBody();
-            if (utils.isNullOrEmpty(responseBody)) {
+            if (Utils.isNullOrEmpty(responseBody)) {
                 Logger.getLogger().info(String.format("Secure Native http call to %s returned with empty response. returning default risk result.", url));
                 return defaultRiskResult;
             }

@@ -5,8 +5,8 @@ import com.securenative.models.EventTypes;
 import java.time.ZonedDateTime;
 
 public class AgentLogoutEvent implements Event {
-    public String eventType;
-    public long ts;
+    private String eventType;
+    private long ts;
 
     public AgentLogoutEvent() {
         this.eventType = EventTypes.AGENT_LOG_OUT.getType();
@@ -16,5 +16,9 @@ public class AgentLogoutEvent implements Event {
     @Override
     public String getEventType() {
         return this.eventType;
+    }
+
+    public long getTs() {
+        return ts;
     }
 }

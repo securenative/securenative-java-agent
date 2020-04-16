@@ -2,7 +2,7 @@ package com.securenative.packagemanager;
 
 import com.securenative.Logger;
 import com.securenative.models.Dependency;
-import com.securenative.utils.SnUtils;
+import com.securenative.utils.Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -81,7 +81,7 @@ public class PackageManager {
         }
 
         Dependency[] dependencies = parseDependencies(deps);
-        String dependenciesHash = SnUtils.calculateHash(Arrays.toString(dependencies));
+        String dependenciesHash = Utils.calculateHash(Arrays.toString(dependencies));
 
         String name = groupId.concat(":").concat(artifactId);
         return new SnPackage(name, version, dependencies, dependenciesHash);

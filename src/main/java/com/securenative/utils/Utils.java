@@ -1,11 +1,15 @@
 package com.securenative.utils;
 
 import com.securenative.Logger;
+import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.ServletRegistration;
+import javax.servlet.ServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -152,5 +156,33 @@ public class Utils {
 
             return 0;
         }
+    }
+
+    public static String cookieIdFromRequest(ServletRequest request, SecureNativeOptions options) {
+        return "";
+    }
+
+    public static String secureHeaderFromRequest(ServletRequest request) {
+        return "";
+    }
+
+    public static String clientIpFromRequest(ServletRequest request) {
+        return "";
+    }
+
+    public static String remoteIpFromRequest(ServletRequest request) {
+        return "";
+    }
+
+    public static String userAgentFromRequest(ServletRequest request) {
+        return "";
+    }
+
+    public static String v4() {
+        return "";
+    }
+
+    public static String calculateHash(String str) {
+        return DigestUtils.sha256Hex(str);
     }
 }
