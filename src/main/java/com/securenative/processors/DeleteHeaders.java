@@ -1,6 +1,7 @@
 package com.securenative.processors;
 
 import com.securenative.rules.Rule;
+import filters.DeleteHeaderFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -9,7 +10,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
-public class DeleteHeaders implements Processor, ClientHttpRequestInterceptor {
+public class DeleteHeaders implements Processor {
     private Rule rule;
 
     public DeleteHeaders(Rule rule) {
@@ -17,15 +18,7 @@ public class DeleteHeaders implements Processor, ClientHttpRequestInterceptor {
     }
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
-        HttpHeaders headers = httpRequest.getHeaders();
-        headers.remove(this.rule.data.value);
-
-        return clientHttpRequestExecution.execute(httpRequest, bytes);
-    }
-
-    @Override
     public void apply() {
-
+        new DeleteHeaderFilter(this.rule);
     }
 }
