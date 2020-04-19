@@ -8,7 +8,8 @@ public enum ApiRoute {
     HEARTBEAT("agent-heart-beat"),
     TRACK("track"),
     VERIFY("verify"),
-    RISK("risk");
+    RISK("risk"),
+    FLOW("flow");
 
     private String route;
 

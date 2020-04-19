@@ -242,16 +242,29 @@ public class SecureNative {
 
     public void track(Event event) {
         Logger.getLogger().info("Track event call");
-        this.eventManager.sendAsync(event, this.snOptions.getApiUrl() + "/track");
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK);
+        this.eventManager.sendAsync(event, requestUrl);
     }
 
     public RiskResult verify(Event event) {
         Logger.getLogger().info("Verify event call");
-        return this.eventManager.sendSync(event, this.snOptions.getApiUrl() + "/verify");
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY);
+        return this.eventManager.sendSync(event, requestUrl);
     }
 
-    public RiskResult flow(long flowId, Event event) {
+    public RiskResult flow(long flowId, Event event) {  // For future purposes
         Logger.getLogger().info("Flow event call");
-        return this.eventManager.sendSync(event, this.snOptions.getApiUrl() + "/flow/" + flowId);
+        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW, flowId);
+        return this.eventManager.sendSync(event, requestUrl);
+    }
+
+    public RiskResult risk(Event event) {
+        Logger.getLogger().info("Risk call");
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK);
+        return this.eventManager.sendSync(event, requestUrl);
+    }
+
+    public SecureNativeOptions getSecureNativeOptions() {
+        return this.snOptions;
     }
 }

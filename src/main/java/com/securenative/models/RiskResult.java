@@ -6,15 +6,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class RiskResult {
     private String riskLevel;
     private double score;
-    private String[] triggers;
+    private String action;
 
     public RiskResult() {
     }
 
-    public RiskResult(String riskLevel, double score, String[] triggers) {
+    public RiskResult(String riskLevel, double score, String action) {
         this.riskLevel = riskLevel;
         this.score = score;
-        this.triggers = triggers;
+        this.action = action;
     }
 
     public String getRiskLevel() {
@@ -33,11 +33,11 @@ public class RiskResult {
         this.score = score;
     }
 
-    public String[] getTriggers() {
-        return triggers;
+    public String getAction() {
+        return action;
     }
 
-    public void setTriggers(String[] triggers) {
-        this.triggers = triggers;
+    public void setAction(String action) {
+        this.action = action;
     }
 }

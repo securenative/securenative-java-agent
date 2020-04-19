@@ -27,7 +27,7 @@ public class SDKEvent implements Event {
     private String vid;
     private String fp;
     private String ip;
-    private String remoteIP;
+    private String remoteIp;
     private String userAgent;
     private User user;
     private long ts;
@@ -76,9 +76,9 @@ public class SDKEvent implements Event {
         }
 
         if (eventOptions.getRemoteIp() != null && !eventOptions.getRemoteIp().equals("")) {
-            this.remoteIP = eventOptions.getRemoteIp();
+            this.remoteIp = eventOptions.getRemoteIp();
         } else {
-            this.remoteIP = Utils.remoteIpFromRequest(request);
+            this.remoteIp = Utils.remoteIpFromRequest(request);
         }
 
         if (eventOptions.getUserAgent() != null && !eventOptions.getUserAgent().equals("")) {
@@ -115,8 +115,8 @@ public class SDKEvent implements Event {
         return ip;
     }
 
-    public String getRemoteIP() {
-        return remoteIP;
+    public String getRemoteIp() {
+        return remoteIp;
     }
 
     public String getUserAgent() {

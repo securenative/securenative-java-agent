@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.securenative.Logger;
 import com.securenative.exceptions.SecureNativeSDKException;
+import com.securenative.models.ActionType;
 import com.securenative.models.Message;
 import com.securenative.models.RiskLevel;
 import com.securenative.models.RiskResult;
@@ -33,7 +34,7 @@ public class SnEventManager implements EventManager {
     private int HTTP_STATUS_OK = 201;
     private String AUTHORIZATION = "Authorization";
     private SecureNativeOptions options;
-    RiskResult defaultRiskResult = new RiskResult(RiskLevel.low.name(), 0.0, new String[0]);
+    RiskResult defaultRiskResult = new RiskResult(RiskLevel.low.name(), 0.0, ActionType.ALLOW.toString());
 
     public SnEventManager(String apiKey, SecureNativeOptions options) throws SecureNativeSDKException {
         this.options = options;

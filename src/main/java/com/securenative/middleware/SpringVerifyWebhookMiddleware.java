@@ -15,11 +15,9 @@ import java.io.InputStreamReader;
 public class SpringVerifyWebhookMiddleware implements Filter {
     private SecureNative secureNative;
     private final String SIGNATURE_KEY = "x-securenative";
-    private Utils utils;
 
     public SpringVerifyWebhookMiddleware(SecureNative secureNative) {
         this.secureNative = secureNative;
-        this.utils = new Utils();
     }
 
     @Override
@@ -28,20 +26,24 @@ public class SpringVerifyWebhookMiddleware implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        if (servletRequest == null) {
+            return;
+        }
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
 
         String signature = "";
-        if (req != null && !Utils.isNullOrEmpty(req.getHeader(SIGNATURE_KEY))) {
+        if (!Utils.isNullOrEmpty(req.getHeader(SIGNATURE_KEY))) {
             signature = req.getHeader(SIGNATURE_KEY);
         }
         String payload = getBody(servletRequest);
-        if (this.utils.isVerifiedSnRequest(payload, signature, this.secureNative.getApiKey())) {
+        if (Utils.isVerifiedSnRequest(payload, signature, this.secureNative.getApiKey())) {
             filterChain.doFilter(req, res);
             return;
         }
         Logger.getLogger().info("Request have been blocked due to incompatible signature");
         res.sendError(401, "Unauthorized");
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
