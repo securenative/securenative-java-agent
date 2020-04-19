@@ -12,11 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class SpringVerifyWebhookMiddleware implements Filter {
+public class VerifyWebhookMiddleware implements Filter {
     private SecureNative secureNative;
     private final String SIGNATURE_KEY = "x-securenative";
 
-    public SpringVerifyWebhookMiddleware(SecureNative secureNative) {
+    public VerifyWebhookMiddleware(SecureNative secureNative) {
         this.secureNative = secureNative;
     }
 

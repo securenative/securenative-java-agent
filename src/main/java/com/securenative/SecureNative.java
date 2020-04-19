@@ -13,14 +13,17 @@ import com.securenative.events.EventFactory;
 import com.securenative.events.SnEventManager;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.interceptors.InterceptorManager;
-import com.securenative.models.*;
+import com.securenative.models.AgentLoginResponse;
+import com.securenative.models.EventTypes;
+import com.securenative.models.RiskResult;
 import com.securenative.module.ModuleManager;
 import com.securenative.rules.RuleManager;
 import com.securenative.utils.Utils;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 import org.json.JSONObject;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class SecureNative {
     private final String API_URL = "https://api.securenative.com/collector/api/v1";
@@ -55,7 +58,7 @@ public class SecureNative {
 
         if (!this.snOptions.isAgentDisable()) {
             // apply interceptors
-            InterceptorManager.applyModuleInterceptors(this.moduleManager, this);
+            InterceptorManager.applyModuleInterceptors(this);
         }
     }
 
@@ -70,6 +73,10 @@ public class SecureNative {
 
         if (options.getInterval() == 0) {
             options.setInterval(INTERVAL);
+        }
+
+        if (options.getAgentDisable() == null) {
+            options.setAgentDisable(false);
         }
 
         if (options.getMaxEvents() == 0) {
@@ -118,54 +125,49 @@ public class SecureNative {
 
     public void error(Error err) {
         Logger.getLogger().debug("Error", err);
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.ERROR);
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.ERROR.getRoute());
         Event event = EventFactory.createEvent(EventTypes.ERROR, err.toString());
         this.eventManager.sendAsync(event, requestUrl);
     }
 
-    public String agentLogin() {
+    public String agentLogin() throws Exception {
         Logger.getLogger().debug("Performing agent login");
-        String loginRequestUrl = this.snOptions.getApiUrl() + "/agent-login";
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.LOGIN.getRoute());
 
         String framework = this.moduleManager.getFramework();
         String frameworkVersion = this.moduleManager.getFrameworkVersion();
 
         Event loginEvent = EventFactory.createEvent(EventTypes.AGENT_LOG_IN, framework, frameworkVersion, this.snOptions.getAppName());
-        try {
-            String r = this.eventManager.sendAgentEvent(loginEvent, loginRequestUrl);
-            AgentLoginResponse res = mapper.readValue(r, AgentLoginResponse.class);
+        String r = this.eventManager.sendAgentEvent(loginEvent, requestUrl);
+        AgentLoginResponse res = mapper.readValue(r, AgentLoginResponse.class);
 
-            // Update config
-            this.handleConfigUpdate(res.config);
+        // Update config
+        this.handleConfigUpdate(res.config);
 
-            // Start heartbeat manager
-            String heartbeatRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT);
-            Event heartbeatEvent = EventFactory.createEvent(EventTypes.ERROR, this.snOptions.getAppName());
-            heartBeatManager = new HeartBeatRunnable(this.eventManager, heartbeatRequestUrl, heartbeatEvent, this.snOptions.getHeartBeatInterval());
-            heartBeatManager.run();
+        // Start heartbeat manager
+        String heartbeatRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
+        Event heartbeatEvent = EventFactory.createEvent(EventTypes.ERROR, this.snOptions.getAppName());
+        heartBeatManager = new HeartBeatRunnable(this.eventManager, heartbeatRequestUrl, heartbeatEvent, this.snOptions.getHeartBeatInterval());
+        heartBeatManager.run();
 
-            // Start configuration updater
-            String confRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG);
-            Event confEvent = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
-            configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTs);
-            configurationUpdater.run();
+        // Start configuration updater
+        String confRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
+        Event confEvent = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
+        configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTs);
+        configurationUpdater.run();
 
-            if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
-                Logger.getLogger().debug("Failed to perform agent login: Invalid api key id");
-                return null;
-            }
-
-            Logger.getLogger().debug(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
-            return res.getSessionId();
-        } catch (Exception e) {
-            Logger.getLogger().debug(String.format("Failed to perform agent login: %s", e.toString()));
+        if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
+            Logger.getLogger().debug("Failed to perform agent login: Invalid api key id");
+            return null;
         }
-        return null;
+
+        Logger.getLogger().debug(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
+        return res.getSessionId();
     }
 
     public Boolean agentLogout() {
         Logger.getLogger().debug("Performing agent logout");
-        String requestUrl = this.snOptions.getApiUrl() + "/agent-logout";
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.LOGOUT.getRoute());
 
         Event event = EventFactory.createEvent(EventTypes.AGENT_LOG_OUT);
         try {
@@ -197,23 +199,21 @@ public class SecureNative {
                 return;
             }
 
-            try {
-                // obtain session
-                String sessionId = this.agentLogin();
-                if (sessionId != null) {
-                    sessionId = parseSessionId(sessionId);
-                    InterceptorManager.applyAgentInterceptor(sessionId);
-                    this.isAgentStarted = true;
+            // obtain session
+            RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
+                    .handle(Exception.class)
+                    .withDelay(Duration.ofSeconds((long)(Math.ceil(Math.random() *10) + 1) * 10))
+                    .withMaxRetries(3);
+            String sessionId =  Failsafe.with(retryPolicy).get(this::agentLogin);
 
-                    Logger.getLogger().debug("Agent successfully started!");
-                } else {
-                    Logger.getLogger().debug("No session obtained, unable to start agent!");
-                }
-            } catch (Exception e){
-                long backoff = (long)(Math.ceil(Math.random() *10) + 1) * 1000;
-                Logger.getLogger().debug(String.format("Failed to start agent, will retry after backoff %s", backoff));
-                CompletableFuture.delayedExecutor(backoff, TimeUnit.MILLISECONDS).execute(this::startAgent);
-                isAgentStarted = false;
+            if (sessionId != null) {
+                sessionId = parseSessionId(sessionId);
+                InterceptorManager.applyAgentInterceptor(sessionId);
+                this.isAgentStarted = true;
+                Logger.getLogger().debug("Agent successfully started!");
+            } else {
+                Logger.getLogger().debug("No session obtained, unable to start agent!");
+                this.isAgentStarted = false;
             }
         } else {
             Logger.getLogger().debug("Agent already started, skipping");
@@ -242,25 +242,25 @@ public class SecureNative {
 
     public void track(Event event) {
         Logger.getLogger().info("Track event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK);
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
         this.eventManager.sendAsync(event, requestUrl);
     }
 
     public RiskResult verify(Event event) {
         Logger.getLogger().info("Verify event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY);
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
     }
 
     public RiskResult flow(long flowId, Event event) {  // For future purposes
         Logger.getLogger().info("Flow event call");
-        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW, flowId);
+        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
         return this.eventManager.sendSync(event, requestUrl);
     }
 
     public RiskResult risk(Event event) {
         Logger.getLogger().info("Risk call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK);
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
     }
 

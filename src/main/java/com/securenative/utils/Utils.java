@@ -3,11 +3,6 @@ package com.securenative.utils;
 import com.securenative.Logger;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
-import com.securenative.processors.BlockRequest;
-import com.securenative.processors.DeleteHeaders;
-import com.securenative.processors.ModifyHeaders;
-import com.securenative.processors.Processor;
-import com.securenative.rules.Rule;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.*;
@@ -26,7 +21,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Formatter;
+import java.util.Scanner;
 
 public class Utils {
     public static String COOKIE_NAME = "_sn";
@@ -86,13 +83,13 @@ public class Utils {
             return s;
         }
         byte[] cipherText = hexToByteArray(s);
-        SecretKeySpec skeySpec = new SecretKeySpec(key.substring(0, 32).getBytes("UTF-8"), "AES");
+        SecretKeySpec skeySpec = new SecretKeySpec(key.substring(0, 32).getBytes(StandardCharsets.UTF_8), "AES");
         byte[] ivBytes = Arrays.copyOfRange(cipherText, 0, AES_KEY_SIZE / 2);
         cipherText = Arrays.copyOfRange(cipherText, AES_KEY_SIZE / 2, cipherText.length);
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         AlgorithmParameterSpec IVspec = new IvParameterSpec(ivBytes);
         cipher.init(Cipher.DECRYPT_MODE, skeySpec, IVspec);
-        return new String(cipher.doFinal(cipherText), "UTF-8").trim();
+        return new String(cipher.doFinal(cipherText), StandardCharsets.UTF_8).trim();
     }
 
     private static byte[] hexToByteArray(String s) {
@@ -120,7 +117,7 @@ public class Utils {
     }
 
     public static String encrypt(String text, String key)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         SecureRandom secureRandom = new SecureRandom();
         byte[] ivBytes = new byte[16];
@@ -134,7 +131,7 @@ public class Utils {
         if (mod != 0) {
             text = String.format(text + "%" + (16 - mod) + "s", " ");
         }
-        return byteArrayToHex(cipher.doFinal(addAll(ivBytes, text.getBytes("UTF-8")))).trim();
+        return byteArrayToHex(cipher.doFinal(addAll(ivBytes, text.getBytes(StandardCharsets.UTF_8)))).trim();
     }
 
     private static byte[] addAll(final byte[] array1, byte[] array2) {
@@ -176,7 +173,7 @@ public class Utils {
             return false;
         }
         return !(address.isSiteLocalAddress() ||
-                address.isAnyLocalAddress()  ||
+                address.isAnyLocalAddress() ||
                 address.isLinkLocalAddress() ||
                 address.isLoopbackAddress() ||
                 address.isMulticastAddress());

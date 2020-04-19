@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 
 public class ConfigurationManager {
     static SecureNativeOptions config;
-    static String CONFIG_FILE = "securenative-test.json";
+    static String CONFIG_FILE = "securenative.json";
 
     // For test purposes
     public ConfigurationManager(String configFile) {

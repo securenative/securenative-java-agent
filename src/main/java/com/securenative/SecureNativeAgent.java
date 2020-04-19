@@ -38,7 +38,7 @@ public class SecureNativeAgent {
             // Start agent
             Logger.getLogger().debug("Starting version compatibility check");
 
-            if (Utils.versionCompare(System.getProperty("java.version"), config.getMinSupportedVersion()) > 0) {
+            if (Utils.versionCompare(System.getProperty("java.version"), config.getMinSupportedVersion()) < 0) {
                 Logger.getLogger().error(String.format("This version of Java %s isn't supported by SecureNative, minimum required version is %s", appPkg.getVersion(), config.getMinSupportedVersion()));
                 Logger.getLogger().error("Visit our docs to find out more: https://docs.securenative.com/docs/integrations/sdk/#java");
                 System.exit(1);

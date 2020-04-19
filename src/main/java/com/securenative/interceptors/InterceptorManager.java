@@ -1,16 +1,13 @@
 package com.securenative.interceptors;
 
-import com.securenative.module.ModuleManager;
 import com.securenative.SecureNative;
+import com.securenative.middleware.VerifyRequestMiddleware;
+import com.securenative.middleware.VerifyWebhookMiddleware;
 
 public class InterceptorManager {
-    public static void applyModuleInterceptors(ModuleManager moduleManager, SecureNative secureNative) {
-        if (moduleManager.getFramework().toLowerCase().contains("spring")) {
-            new SpringInterceptor(secureNative);
-            new HttpInterceptor(secureNative);
-            new HttpsInterceptor(secureNative);
-        }
-        new SpringInterceptor(secureNative);  // Default interceptor
+    public static void applyModuleInterceptors(SecureNative secureNative) {
+        new VerifyRequestMiddleware(secureNative);
+        new VerifyWebhookMiddleware(secureNative);
         new HttpInterceptor(secureNative);
         new HttpsInterceptor(secureNative);
     }
