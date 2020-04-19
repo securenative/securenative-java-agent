@@ -1,6 +1,6 @@
 package com.securenative.processors;
 
-public enum Processors {
+public enum ProcessorType {
     MODIFY_HEADERS("ModifyHeaders"),
     DELETE_HEADERS("DeleteHeaders"),
     BLACKLIST_IP("BlacklistIp"),
@@ -9,13 +9,13 @@ public enum Processors {
     WHITELIST_IP("WhitelistIp"),
     BLOCK_REQUEST("BlockRequest");
 
-    public String getProcess() {
-        return process;
+    public String getType() {
+        return type;
     }
 
-    private final String process;
+    private final String type;
 
-    Processors(String process) {
-        this.process = process;
+    ProcessorType(String process) {
+        this.type = process;
     }
 }

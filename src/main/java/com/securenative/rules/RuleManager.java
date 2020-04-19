@@ -4,7 +4,6 @@ import com.securenative.processors.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class RuleManager {
     private static List<Rule> rules = new ArrayList<>();
@@ -50,21 +49,8 @@ public class RuleManager {
             }
 
             Rule r = new Rule(data, new RuleInterception(module, func, processor));
-            Objects.requireNonNull(this.getRuleProcessor(processor, r)).apply();
+            ProcessorsFactory.getRuleProcessor(processor, r).apply();
             this.registerRule(rule);
-        }
-    }
-
-    private Processor getRuleProcessor(String process, Rule rule) {
-        switch (process) {
-            case :
-                return new ModifyHeaders(rule);
-            case "DeleteHeaders":
-                return new DeleteHeaders(rule);
-            case "BlockRequest":
-                return new BlockRequest();
-            default:
-                return null;
         }
     }
 }

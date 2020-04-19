@@ -7,6 +7,7 @@ import com.securenative.rules.RuleManager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RuleManagerTest {
@@ -41,5 +42,18 @@ public class RuleManagerTest {
 
         List<Rule> rules = ruleManager.getRules("filter");
         Assert.assertEquals(1, rules.size());
+    }
+
+    @Test
+    public void enforceRules() {
+        RuleManager ruleManager = new RuleManager();
+        RuleData data = new RuleData("block", "10.0.0.1");
+        RuleInterception interception = new RuleInterception("spring", "block", "BlockRequest");
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new Rule("test", data, interception));
+
+        Assert.assertEquals(0, ruleManager.getAllRules().size());
+        ruleManager.enforceRules(rules);
+        Assert.assertEquals(1, ruleManager.getAllRules().size());
     }
 }

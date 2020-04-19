@@ -3,7 +3,7 @@ package com.securenative.processors;
 import com.securenative.rules.Rule;
 import com.securenative.filters.ModifyHeadersFilter;
 
-public class ModifyHeaders implements Processor {
+public class ModifyHeaders extends Processor {
     private Rule rule;
 
     public ModifyHeaders(Rule rule) {

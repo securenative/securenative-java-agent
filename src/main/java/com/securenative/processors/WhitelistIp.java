@@ -5,7 +5,7 @@ import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
 
-public class WhitelistIp implements Processor {
+public class WhitelistIp extends Processor {
     private Action action;
 
     public WhitelistIp(Action action) {

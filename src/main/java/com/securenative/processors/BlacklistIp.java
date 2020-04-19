@@ -5,7 +5,7 @@ import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
 
-public class BlacklistIp implements Processor {
+public class BlacklistIp extends Processor {
     private Action action;
 
     public BlacklistIp(Action action) {
