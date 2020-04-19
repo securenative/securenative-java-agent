@@ -19,6 +19,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 public class SDKEvent implements Event {
     private String eventType;
@@ -86,7 +87,7 @@ public class SDKEvent implements Event {
             this.userAgent = Utils.userAgentFromRequest(request);
         }
 
-        this.vid = Utils.v4();
+        this.vid = UUID.randomUUID().toString();
         this.user = eventOptions.getUser();
         this.ts = ZonedDateTime.now().toEpochSecond();
         this.device = eventOptions.getDevice();

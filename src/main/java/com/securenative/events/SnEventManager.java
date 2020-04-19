@@ -75,15 +75,15 @@ public class SnEventManager implements EventManager {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
             Response response = this.asyncClient.execute().get();
             if (response == null || response.getStatusCode() > HTTP_STATUS_OK) {
-                Logger.getLogger().info(String.format("Secure Native http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
+                Logger.getLogger().info(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
                 events.add(new Message(event, response.getUri().toUrl()));
             }
             String responseBody = response.getResponseBody();
             if (Utils.isNullOrEmpty(responseBody)) {
-                Logger.getLogger().info(String.format("Secure Native http call to %s returned with empty response. returning default risk result.", url));
+                Logger.getLogger().info(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", url));
                 return defaultRiskResult;
             }
-            Logger.getLogger().info(String.format("Secure Native http call to %s was successful.", url));
+            Logger.getLogger().info(String.format("SecureNative http call to %s was successful.", url));
             return mapper.readValue(responseBody, RiskResult.class);
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class SnEventManager implements EventManager {
         try {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
         } catch (JsonProcessingException e) {
-            Logger.getLogger().info(String.format("Secure Native async http call failed to end point: %s  with event type %s. error: %s", url, event.getEventType(), e));
+            Logger.getLogger().info(String.format("SecureNative async http call failed to end point: %s  with event type %s. error: %s", url, event.getEventType(), e));
         }
 
         this.asyncClient.execute(
@@ -109,7 +109,7 @@ public class SnEventManager implements EventManager {
                     @Override
                     public Object onCompleted(Response response) {
                         if (response.getStatusCode() > HTTP_STATUS_OK) {
-                            Logger.getLogger().info(String.format("Secure Native http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
+                            Logger.getLogger().info(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
                             events.add(new Message(event, response.getUri().toUrl()));
                         }
                         return response;
@@ -125,16 +125,16 @@ public class SnEventManager implements EventManager {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
             Response response = this.asyncClient.execute().get();
             if (response == null || response.getStatusCode() > HTTP_STATUS_OK) {
-                Logger.getLogger().info(String.format("Secure Native http call failed to end point: %s  with event type %s. adding back to queue.", requestUrl, event.getEventType()));
+                Logger.getLogger().info(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", requestUrl, event.getEventType()));
                 assert response != null;
                 events.add(new Message(event, response.getUri().toUrl()));
             }
             String responseBody = response.getResponseBody();
             if (Utils.isNullOrEmpty(responseBody)) {
-                Logger.getLogger().info(String.format("Secure Native http call to %s returned with empty response. returning default risk result.", requestUrl));
+                Logger.getLogger().info(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", requestUrl));
                 return "";
             }
-            Logger.getLogger().info(String.format("Secure Native http call to %s was successful.", requestUrl));
+            Logger.getLogger().info(String.format("SecureNative http call to %s was successful.", requestUrl));
             return responseBody;
         } catch (InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
@@ -161,6 +161,12 @@ public class SnEventManager implements EventManager {
             return read.getParent().getVersion();
         } catch (Exception e) {
             return "unknown";
+        }
+    }
+
+    public void flush() {
+        for (Message message: this.events) {
+            this.sendSync(message.getSnEvent(), message.getUrl());
         }
     }
 }

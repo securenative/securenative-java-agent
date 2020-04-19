@@ -29,6 +29,8 @@ public class SecureNativeOptions {
     private String hostId;
     @JsonProperty("heartBeatInterval")
     private long heartBeatInterval;
+    @JsonProperty("cookieName")
+    private String cookieName;
 
     public SecureNativeOptions() {
         this.autoSend = true;
@@ -172,5 +174,13 @@ public class SecureNativeOptions {
 
     public void setHeartBeatInterval(long heartBeatInterval) {
         this.heartBeatInterval = heartBeatInterval;
+    }
+
+    public String getCookieName() {
+        return cookieName;
+    }
+
+    public void setCookieName(String cookieName) {
+        this.cookieName = cookieName;
     }
 }

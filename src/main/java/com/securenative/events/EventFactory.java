@@ -1,27 +1,40 @@
 package com.securenative.events;
 
+import com.securenative.configurations.SecureNativeOptions;
+import com.securenative.models.EventOptions;
 import com.securenative.models.EventTypes;
+import com.securenative.models.RequestOptions;
+
+import javax.servlet.ServletRequest;
 
 public class EventFactory {
-    public static Event createEvent(EventTypes eventType, String... args) {
+    public static Event createEvent(EventTypes eventType, Object... args) {
         if (eventType == EventTypes.AGENT_LOG_IN) {
-            String framework = args[0];
-            String frameworkVersion = args[1];
-            String appName = args[2];
+            String framework = (String) args[0];
+            String frameworkVersion = (String) args[1];
+            String appName = (String) args[2];
             return new AgentLoginEvent(framework, frameworkVersion, appName);
         } else if (eventType == EventTypes.AGENT_LOG_OUT) {
             return new AgentLogoutEvent();
         } else if (eventType == EventTypes.ERROR) {
-            String stackTrace = args[0];
-            String message = args[1];
+            String stackTrace = (String) args[0];
+            String message = (String) args[1];
             return new ErrorEvent(stackTrace, message);
         } else if (eventType == EventTypes.CONFIG) {
-            String hostId = args[0];
-            String ts = args[1];
-            String appName = args[2];
-            return new ConfigEvent(hostId, appName, Long.parseLong(ts));
+            String hostId = (String) args[0];
+            String appName = (String) args[1];
+            Long ts = (Long) args[2];
+            return new ConfigEvent(hostId, appName, ts);
         } else if (eventType == EventTypes.HEARTBEAT) {
             new AgentHeartBeatEvent();
+        } else if (eventType == EventTypes.REQUEST) {
+            RequestOptions options = (RequestOptions) args[0];
+            new RequestEvent(options);
+        } else if (eventType == EventTypes.SDK) {
+            ServletRequest request = (ServletRequest) args[0];
+            EventOptions eventOptions = (EventOptions) args[1];
+            SecureNativeOptions snOptions = (SecureNativeOptions) args[2];
+            new SDKEvent(request, eventOptions, snOptions);
         }
         return null;
     }

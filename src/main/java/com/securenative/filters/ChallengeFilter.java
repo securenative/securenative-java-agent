@@ -1,4 +1,4 @@
-package filters;
+package com.securenative.filters;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;

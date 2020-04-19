@@ -223,6 +223,7 @@ public class SecureNative {
     public void stopAgent() {
         if (this.isAgentStarted) {
             Logger.getLogger().debug("Attempting to stop agent");
+            this.eventManager.flush();
             Boolean status = this.agentLogout();
             if (status) {
                 this.isAgentStarted = false;

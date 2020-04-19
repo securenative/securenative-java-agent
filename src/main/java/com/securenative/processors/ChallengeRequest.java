@@ -1,7 +1,6 @@
 package com.securenative.processors;
 
-
-import filters.ChallengeFilter;
+import com.securenative.filters.ChallengeFilter;
 
 public class ChallengeRequest implements Processor{
     @Override

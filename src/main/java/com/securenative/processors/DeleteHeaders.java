@@ -1,14 +1,7 @@
 package com.securenative.processors;
 
 import com.securenative.rules.Rule;
-import filters.DeleteHeaderFilter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
-
-import java.io.IOException;
+import com.securenative.filters.DeleteHeaderFilter;
 
 public class DeleteHeaders implements Processor {
     private Rule rule;

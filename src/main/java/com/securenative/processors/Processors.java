@@ -13,7 +13,7 @@ public enum Processors {
         return process;
     }
 
-    private String process;
+    private final String process;
 
     Processors(String process) {
         this.process = process;

@@ -1,7 +1,6 @@
 package com.securenative.processors;
 
-
-import filters.BlockRequestFilter;
+import com.securenative.filters.BlockRequestFilter;
 
 public class BlockRequest implements Processor {
 
