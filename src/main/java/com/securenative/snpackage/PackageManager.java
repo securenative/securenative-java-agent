@@ -1,4 +1,4 @@
-package com.securenative.packagemanager;
+package com.securenative.snpackage;
 
 import com.securenative.Logger;
 import com.securenative.models.Dependency;
@@ -60,7 +60,7 @@ public class PackageManager {
         return "";
     }
 
-    public static SnPackage getPackage(String packageFilePath) {
+    public static PackageItem getPackage(String packageFilePath) {
         Document document = readPackageFile(packageFilePath);
 
         NodeList deps = document.getElementsByTagName("dependency");
@@ -84,6 +84,6 @@ public class PackageManager {
         String dependenciesHash = Utils.calculateHash(Arrays.toString(dependencies));
 
         String name = groupId.concat(":").concat(artifactId);
-        return new SnPackage(name, version, dependencies, dependenciesHash);
+        return new PackageItem(name, version, dependencies, dependenciesHash);
     }
 }

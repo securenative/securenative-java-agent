@@ -4,8 +4,8 @@ import com.securenative.configurations.ConfigurationManager;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.module.ModuleManager;
-import com.securenative.packagemanager.PackageManager;
-import com.securenative.packagemanager.SnPackage;
+import com.securenative.snpackage.PackageManager;
+import com.securenative.snpackage.PackageItem;
 import com.securenative.utils.Utils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class SecureNativeTest {
     public void invalidInitialization() throws SecureNativeSDKException {
         SecureNativeOptions config = ConfigurationManager.getConfig();
         String PACKAGE_FILE_NAME = "/pom.xml";
-        SnPackage appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+        PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
         ModuleManager moduleManager = new ModuleManager(appPkg);
 
         new SecureNative(moduleManager, config);
@@ -30,7 +30,7 @@ public class SecureNativeTest {
     @Test
     public void readConfigurationFile() {
         String PACKAGE_FILE_NAME = "/pom.xml";
-        SnPackage appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+        PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
 
         String packageName = "com.securenative.java:securenative-java-agent";
 
