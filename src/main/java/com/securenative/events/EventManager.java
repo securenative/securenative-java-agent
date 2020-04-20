@@ -53,7 +53,7 @@ public class EventManager implements IEventManager {
                     Thread.sleep((long) (Math.random() * 1000));
                     Message msg = events.poll();
                     if (msg != null) {
-                        sendSync(msg.getSnEvent(), msg.getUrl());
+                        sendSync(msg.getEvent(), msg.getUrl());
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -167,7 +167,7 @@ public class EventManager implements IEventManager {
 
     public void flush() {
         for (Message message: this.events) {
-            this.sendSync(message.getSnEvent(), message.getUrl());
+            this.sendSync(message.getEvent(), message.getUrl());
         }
     }
 }

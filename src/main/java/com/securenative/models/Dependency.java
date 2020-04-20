@@ -3,8 +3,10 @@ package com.securenative.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Dependency {
-    private @JsonProperty("key") String name;
-    private @JsonProperty("value") String version;
+    @JsonProperty("key")
+    private String name;
+    @JsonProperty("value")
+    private String version;
 
     public Dependency(String name, String version) {
         this.name = name;

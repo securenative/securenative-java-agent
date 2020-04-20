@@ -3,20 +3,16 @@ package com.securenative.events;
 import com.securenative.models.EventTypes;
 import com.securenative.utils.Utils;
 
-import java.time.ZonedDateTime;
-
 public class ConfigEvent implements Event {
     private final String eventType;
     private String hostId;
     private String appName;
     private String timestamp;
-    private long ts;
 
-    public ConfigEvent(String hostId, String appName, Long ts) {
+    public ConfigEvent(String hostId, String appName) {
         this.eventType = EventTypes.CONFIG.getType();
         this.appName = appName;
         this.hostId = hostId;
-        this.ts = ts;
         this.timestamp = Utils.generateTimestamp();
     }
 
@@ -33,12 +29,9 @@ public class ConfigEvent implements Event {
         return appName;
     }
 
-    public long getTs() {
-        return ts;
-    }
-
     public String getTimestamp() {
         return timestamp;
+    }
 
     public void setHostId(String hostId) {
         this.hostId = hostId;

@@ -142,8 +142,4 @@ public class RequestEvent implements Event {
     public void setVid(String vid) {
         this.vid = vid;
     }
-
-    public void setTs(long ts) {
-        this.ts = ts;
-    }
 }

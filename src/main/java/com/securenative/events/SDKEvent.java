@@ -17,7 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -159,10 +158,6 @@ public class SDKEvent implements Event {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public void setTs(long ts) {
-        this.ts = ts;
     }
 
     public void setDevice(String device) {

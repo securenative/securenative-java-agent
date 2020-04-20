@@ -10,7 +10,6 @@ import com.securenative.snpackage.PackageItem;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.ZonedDateTime;
 
 public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
@@ -106,10 +105,6 @@ public class AgentLoginEvent implements Event {
 
     public Agent getAgent() {
         return agent;
-    }
-
-    public void setTs(Long ts) {
-        this.ts = ts;
     }
 
     public void setPackageItem(PackageItem packageItem) {

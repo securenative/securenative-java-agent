@@ -3,8 +3,6 @@ package com.securenative.events;
 import com.securenative.models.EventTypes;
 import com.securenative.utils.Utils;
 
-import java.time.ZonedDateTime;
-
 public class AgentLogoutEvent implements Event {
     private final String eventType;
     private String timestamp;
@@ -21,9 +19,5 @@ public class AgentLogoutEvent implements Event {
 
     public String getTimestamp() {
         return timestamp;
-    }
-
-    public void setTs(long ts) {
-        this.ts = ts;
     }
 }

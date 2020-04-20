@@ -41,7 +41,7 @@ public class SecureNative {
     private ObjectMapper mapper;
     private RuleManager ruleManager;
 
-    private long configUpdateTs = 0;
+    private String configUpdateTimestamp = "0";
     private ConfigurationUpdaterRunnable configurationUpdater;
     private HeartBeatRunnable heartBeatManager;
     public ModuleManager moduleManager;
@@ -108,8 +108,8 @@ public class SecureNative {
             return;
         }
 
-        if (config.getTs() > this.configUpdateTs) {
-            this.configUpdateTs = config.getTs();
+        if (!config.getTimestamp().equals(this.configUpdateTimestamp)) {
+            this.configUpdateTimestamp = config.getTimestamp();
         }
 
         // enforce all rules
@@ -153,7 +153,7 @@ public class SecureNative {
         // Start configuration updater
         String confRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
         Event confEvent = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
-        configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTs);
+        configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTimestamp);
         configurationUpdater.run();
 
         if (res.getSessionId().toLowerCase().equals("invalid api key id")) {

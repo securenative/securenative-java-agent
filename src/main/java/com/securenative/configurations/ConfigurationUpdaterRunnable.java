@@ -12,9 +12,9 @@ public class ConfigurationUpdaterRunnable implements Runnable {
     private Event event;
     private Thread worker;
     private AtomicBoolean running = new AtomicBoolean(false);
-    private long interval;
+    private String interval;
 
-    public ConfigurationUpdaterRunnable(EventManager eventManager, String requestUrl, Event event, long interval) {
+    public ConfigurationUpdaterRunnable(EventManager eventManager, String requestUrl, Event event, String interval) {
         this.eventManager = eventManager;
         this.requestUrl = requestUrl;
         this.event = event;
@@ -27,7 +27,7 @@ public class ConfigurationUpdaterRunnable implements Runnable {
         running.set(true);
         while (running.get()) {
             try {
-                Thread.sleep(interval);
+                Thread.sleep(Long.parseLong(this.interval));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 Logger.getLogger().debug("Thread was interrupted, Closing configuration updater");

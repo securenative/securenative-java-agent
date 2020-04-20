@@ -3,20 +3,20 @@ package com.securenative.models;
 import com.securenative.events.Event;
 
 public class Message {
-    private Event snEvent;
+    private Event event;
     private String url;
 
-    public Message(Event snEvent, String url) {
-        this.snEvent = snEvent;
+    public Message(Event event, String url) {
+        this.event = event;
         this.url = url;
     }
 
-    public Event getSnEvent() {
-        return snEvent;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setSnEvent(Event snEvent) {
-        this.snEvent = snEvent;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public String getUrl() {

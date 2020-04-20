@@ -3,8 +3,6 @@ package com.securenative.events;
 import com.securenative.models.EventTypes;
 import com.securenative.utils.Utils;
 
-import java.time.ZonedDateTime;
-
 public class ErrorEvent implements Event {
     private String message;
     private String stackTrace;
@@ -42,9 +40,5 @@ public class ErrorEvent implements Event {
 
     public void setStackTrace(String stackTrace) {
         this.stackTrace = stackTrace;
-    }
-
-    public void setTs(long ts) {
-        this.ts = ts;
     }
 }

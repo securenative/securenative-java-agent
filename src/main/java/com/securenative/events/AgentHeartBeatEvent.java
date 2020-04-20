@@ -8,7 +8,6 @@ import com.securenative.utils.Utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.ZonedDateTime;
 
 public class AgentHeartBeatEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "/pom.xml";
@@ -18,7 +17,7 @@ public class AgentHeartBeatEvent implements Event {
     private String hostname;
     private String agentVersion;
     private String timestamp;
-    private static SnPackage agentPackage = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+    private static PackageItem agentPackage = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
 
     public AgentHeartBeatEvent() {
         this.eventType = EventTypes.HEARTBEAT.getType();
@@ -72,10 +71,6 @@ public class AgentHeartBeatEvent implements Event {
 
     public void setAgentVersion(String agentVersion) {
         this.agentVersion = agentVersion;
-    }
-
-    public void setTs(long ts) {
-        this.ts = ts;
     }
 
     public static void setAgentPackage(PackageItem agentPackage) {

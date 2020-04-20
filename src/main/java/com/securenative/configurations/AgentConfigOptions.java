@@ -13,13 +13,13 @@ public class AgentConfigOptions {
     private List<Rule> rules;
     @JsonProperty("actions")
     private List<Action> actions;
-    @JsonProperty("ts")
-    private long ts;
+    @JsonProperty("timestamp")
+    private String timestamp;
 
-    public AgentConfigOptions(List<Rule> rules, List<Action> actions, long ts) {
+    public AgentConfigOptions(List<Rule> rules, List<Action> actions, String timestamp) {
         this.rules = rules;
         this.actions = actions;
-        this.ts = ts;
+        this.timestamp = timestamp;
     }
 
     // Empty constructor for deserialization
@@ -33,8 +33,8 @@ public class AgentConfigOptions {
         return actions;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public void setRules(List<Rule> rules) {

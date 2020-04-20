@@ -26,7 +26,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
@@ -43,7 +42,7 @@ public class VerifyRequestMiddleware implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
 
@@ -92,7 +91,6 @@ public class VerifyRequestMiddleware implements Filter {
 
     @Override
     public void destroy() {
-
     }
 
     private RiskResult executeRisk(ServletRequest servletRequest, SecureNative secureNative) {

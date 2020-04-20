@@ -10,7 +10,6 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ActionSet {
@@ -91,7 +90,7 @@ public class ActionSet {
             for (ActionItem actionItem : this.ip) {
                 if (actionItem.getItem().contains("/")) {
                     return subnetContains(ai.getItem(), actionItem.getItem()) &&
-                            actionItem.getTimeout() == timeout;
+                            actionItem.getTimeout().equals(timeout);
                 } else {
                     if (actionItem.equals(ai)) {
                         return true;

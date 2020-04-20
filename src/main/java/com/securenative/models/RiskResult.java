@@ -1,13 +1,18 @@
 package com.securenative.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RiskResult {
+    @JsonProperty("riskLevel")
     private String riskLevel;
+    @JsonProperty("score")
     private double score;
+    @JsonProperty("action")
     private String action;
 
+    // Empty constructor for deserialization
     public RiskResult() {
     }
 
