@@ -30,7 +30,7 @@ public class SDKEvent implements Event {
     private String remoteIp;
     private String userAgent;
     private User user;
-    private long ts;
+    private String timestamp;
     private String device;
     private Map<String, String> params;
 
@@ -89,7 +89,7 @@ public class SDKEvent implements Event {
 
         this.vid = UUID.randomUUID().toString();
         this.user = eventOptions.getUser();
-        this.ts = ZonedDateTime.now().toEpochSecond();
+        this.timestamp = Utils.generateTimestamp();
         this.device = eventOptions.getDevice();
         this.params = eventOptions.getParams();
     }
@@ -127,8 +127,8 @@ public class SDKEvent implements Event {
         return user;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public String getDevice() {

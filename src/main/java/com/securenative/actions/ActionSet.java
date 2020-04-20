@@ -2,6 +2,7 @@ package com.securenative.actions;
 
 import com.google.common.net.InetAddresses;
 import com.securenative.Logger;
+import com.securenative.Schedualer;
 import com.securenative.models.ActionItem;
 import com.securenative.models.SetType;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,7 @@ public class ActionSet {
 
     public void add(String type, String item, @Nullable Long timeout) {
         if (timeout != null) {
-            CompletableFuture.delayedExecutor(timeout, TimeUnit.SECONDS).execute(() -> {
+            Schedualer.delayedExecutor(timeout, TimeUnit.SECONDS, () -> {
                 this.delete(type, item, timeout);
             });
         }

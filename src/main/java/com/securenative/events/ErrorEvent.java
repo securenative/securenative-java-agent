@@ -1,17 +1,19 @@
 package com.securenative.events;
 
 import com.securenative.models.EventTypes;
+import com.securenative.utils.Utils;
+
 import java.time.ZonedDateTime;
 
 public class ErrorEvent implements Event {
     private String message;
     private String stackTrace;
     private String eventType;
-    private long ts;
+    private String timestamp;
 
     public ErrorEvent(String stackTrace, String message) {
         this.eventType = EventTypes.ERROR.getType();
-        this.ts = ZonedDateTime.now().toEpochSecond();
+        this.timestamp = Utils.generateTimestamp();
         this.message = message;
         this.stackTrace = stackTrace;
     }
@@ -29,7 +31,7 @@ public class ErrorEvent implements Event {
         return stackTrace;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 }

@@ -3,6 +3,7 @@ package com.securenative.utils;
 import com.securenative.Logger;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
+import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.*;
@@ -24,6 +25,9 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.Scanner;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Utils {
     public static String COOKIE_NAME = "_sn";
@@ -248,5 +252,24 @@ public class Utils {
 
     public static String calculateHash(String str) {
         return DigestUtils.sha256Hex(str);
+    }
+
+    public static Pair<Long, String> getProcessInfo() {
+        String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
+        Pair<Long, String> pair = new Pair<>(0L, "");
+        if (processName != null && processName.length() > 0) {
+            try {
+                String[] processTokens = processName.split("@");
+                pair = new Pair<>(Long.parseLong(processTokens[0]), processTokens[1]);
+            }
+            catch (Exception e) {
+                return pair;
+            }
+        }
+        return pair;
+    }
+
+    public static String generateTimestamp() {
+        return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
     }
 }

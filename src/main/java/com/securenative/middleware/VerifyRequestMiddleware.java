@@ -132,9 +132,9 @@ public class VerifyRequestMiddleware implements Filter {
         String remoteIp = Utils.remoteIpFromRequest(servletRequest);
         String userAgent = Utils.userAgentFromRequest(servletRequest);
         String vid = UUID.randomUUID().toString();
-        long ts = ZonedDateTime.now().toEpochSecond();
+        String timestamp = Utils.generateTimestamp();
 
-        RequestOptions requestOptions = new RequestOptions(options.getHostId(), options.getAppName(), url, method, userAgent, headers, body, ip, remoteIp, fp, cid, vid, ts);
+        RequestOptions requestOptions = new RequestOptions(options.getHostId(), options.getAppName(), url, method, userAgent, headers, body, ip, remoteIp, fp, cid, vid, timestamp);
         Event event = EventFactory.createEvent(EventTypes.REQUEST, requestOptions);
         RiskResult risk = secureNative.risk(event);
         Logger.getLogger().debug(String.format("Risk %s", risk));

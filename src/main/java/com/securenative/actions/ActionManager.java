@@ -10,7 +10,7 @@ import java.util.Map;
 import static com.securenative.processors.ProcessorType.*;
 
 public class ActionManager {
-    private static final Map<String, String> actionProcessors = new HashMap<>() {{
+    private static final Map<String, String> actionProcessors = new HashMap<String, String>() {{
         put(ProcessesType.BLOCK_IP.getType(), BLACKLIST_IP.getType());
         put(ProcessesType.UNBLOCK_IP.getType(), WHITELIST_IP.getType());
         put(ProcessesType.ALLOW_IP.getType(), DELETE_BLACKLISTED.getType());

@@ -5,6 +5,8 @@ import com.securenative.models.EventTypes;
 import com.securenative.Logger;
 import com.securenative.packagemanager.PackageManager;
 import com.securenative.packagemanager.SnPackage;
+import com.securenative.utils.Utils;
+import javafx.util.Pair;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -15,8 +17,8 @@ public class AgentLoginEvent implements Event {
 
     @JsonProperty("eventType")
     private String eventType;
-    @JsonProperty("ts")
-    private Long ts;
+    @JsonProperty("timestamp")
+    private String timestamp;
     @JsonProperty("package")
     private SnPackage snPackage;
     @JsonProperty("appName")
@@ -47,9 +49,10 @@ public class AgentLoginEvent implements Event {
 
         this.snRuntime = new SnRuntime("java", System.getProperty("java.version"));
 
+        Pair<Long, String> processInfo = Utils.getProcessInfo();
         this.process = new SnProcess(
-                ProcessHandle.current().pid(),
-                ProcessHandle.current().getClass().getName(),
+                processInfo.getKey(),
+                processInfo.getValue(),
                 System.getProperty("user.dir")
         );
 
@@ -65,7 +68,7 @@ public class AgentLoginEvent implements Event {
 
         this.agent = new Agent("Java", agentPkg.getVersion(), System.getProperty("java.class.path"));
 
-        this.ts = ZonedDateTime.now().toEpochSecond();
+        this.timestamp = Utils.generateTimestamp();
     }
 
     @Override
@@ -73,8 +76,8 @@ public class AgentLoginEvent implements Event {
         return this.eventType;
     }
 
-    public Long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public SnPackage getSnPackage() {
