@@ -2,7 +2,7 @@ package com.securenative.configurations;
 
 import com.securenative.events.Event;
 import com.securenative.events.EventManager;
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

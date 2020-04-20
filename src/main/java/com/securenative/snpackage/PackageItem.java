@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.models.Dependency;
 
 public class PackageItem {
-    @JsonProperty("name") protected String name;
-    @JsonProperty("version") protected String version;
-    @JsonProperty("dependencies") protected Dependency[] dependencies;
-    @JsonProperty("dependenciesHash") protected String dependenciesHash;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("version")
+    private String version;
+    @JsonProperty("dependencies")
+    private Dependency[] dependencies;
+    @JsonProperty("dependenciesHash")
+    private String dependenciesHash;
 
     public PackageItem(String name, String version, Dependency[] dependencies, String dependenciesHash) {
         this.name = name;

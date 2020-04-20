@@ -1,6 +1,6 @@
 package com.securenative.middleware;
 
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.SecureNative;
 import com.securenative.utils.Utils;
 

@@ -1,4 +1,4 @@
-package com.securenative;
+package com.securenative.utils;
 
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ public class Logger {
         BasicConfigurator.configure();
         if (isLoggingEnabledInput) {
             logger = LoggerFactory.getLogger(Logger.class);
-            logger.info("Secure Native logger is enabled");
+            logger.info("SecureNative logger is enabled");
             return;
         }
         logger = new ImpotentLogger();

@@ -1,6 +1,5 @@
 package com.securenative.utils;
 
-import com.securenative.Logger;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
 import javafx.util.Pair;

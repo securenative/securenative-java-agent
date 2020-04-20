@@ -3,7 +3,7 @@ package com.securenative.events;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.models.ActionType;
 import com.securenative.models.Message;

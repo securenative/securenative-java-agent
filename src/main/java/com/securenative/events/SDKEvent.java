@@ -1,6 +1,6 @@
 package com.securenative.events;
 
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.models.EventOptions;
 import com.securenative.models.EventTypes;

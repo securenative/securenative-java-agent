@@ -18,6 +18,7 @@ import com.securenative.models.EventTypes;
 import com.securenative.models.RiskResult;
 import com.securenative.module.ModuleManager;
 import com.securenative.rules.RuleManager;
+import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;

@@ -1,8 +1,8 @@
 package com.securenative.actions;
 
 import com.google.common.net.InetAddresses;
-import com.securenative.Logger;
-import com.securenative.Schedualer;
+import com.securenative.utils.Scheduler;
+import com.securenative.utils.Logger;
 import com.securenative.models.ActionItem;
 import com.securenative.models.SetType;
 import org.jetbrains.annotations.Nullable;
@@ -27,9 +27,7 @@ public class ActionSet {
 
     public void add(String type, String item, @Nullable Long timeout) {
         if (timeout != null) {
-            Schedualer.delayedExecutor(timeout, TimeUnit.SECONDS, () -> {
-                this.delete(type, item, timeout);
-            });
+            Scheduler.delayedExecutor(timeout, TimeUnit.SECONDS, () -> this.delete(type, item, timeout));
         }
 
         if (type.equals(SetType.IP.name())) {

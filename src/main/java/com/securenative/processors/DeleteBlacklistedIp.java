@@ -1,6 +1,6 @@
 package com.securenative.processors;
 
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;

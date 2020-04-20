@@ -1,7 +1,7 @@
 package com.securenative.configurations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;

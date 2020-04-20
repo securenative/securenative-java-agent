@@ -1,6 +1,6 @@
 package com.securenative.snpackage;
 
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.models.Dependency;
 import com.securenative.utils.Utils;
 import org.w3c.dom.Document;

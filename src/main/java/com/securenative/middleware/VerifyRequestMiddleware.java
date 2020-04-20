@@ -1,7 +1,7 @@
 package com.securenative.middleware;
 
 import com.google.common.io.CharStreams;
-import com.securenative.Logger;
+import com.securenative.utils.Logger;
 import com.securenative.SecureNative;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.events.Event;
