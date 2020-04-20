@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.securenative.actions.ActionManager;
 import com.securenative.actions.ApiRoute;
 import com.securenative.configurations.AgentConfigOptions;
-import com.securenative.configurations.ConfigurationUpdaterRunnable;
-import com.securenative.configurations.HeartBeatRunnable;
+import com.securenative.configurations.ExecuteManager;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.events.Event;
 import com.securenative.events.EventFactory;
@@ -34,6 +33,7 @@ public class SecureNative {
     private final Boolean SDK_ENABLED = true;
     private final Boolean DEBUG_LOG = false;
     private final int DEFAULT_TIMEOUT = 1500;
+    private String configUpdateTimestamp = Utils.generateTimestamp();
 
     private Boolean isAgentStarted = false;
     private EventManager eventManager;
@@ -41,11 +41,9 @@ public class SecureNative {
     private String apiKey;
     private ObjectMapper mapper;
     private RuleManager ruleManager;
-
-    private String configUpdateTimestamp = "0";
-    private ConfigurationUpdaterRunnable configurationUpdater;
-    private HeartBeatRunnable heartBeatManager;
-    public ModuleManager moduleManager;
+    private ExecuteManager heartbeat;
+    private ExecuteManager configurationUpdater;
+    private ModuleManager moduleManager;
 
     public SecureNative(ModuleManager moduleManager, SecureNativeOptions snOptions) throws SecureNativeSDKException {
         this.apiKey = snOptions.getApiKey();
@@ -103,13 +101,13 @@ public class SecureNative {
     }
 
     private void handleConfigUpdate(AgentConfigOptions config) {
-        Logger.getLogger().debug("Handling config update");
+        Logger.getLogger().debug("Handling configuration update");
 
         if (config == null) {
             return;
         }
 
-        if (!config.getTimestamp().equals(this.configUpdateTimestamp)) {
+        if (config.getTimestamp().compareTo(this.configUpdateTimestamp) > 0) {
             this.configUpdateTimestamp = config.getTimestamp();
         }
 
@@ -146,16 +144,14 @@ public class SecureNative {
         this.handleConfigUpdate(res.getConfig());
 
         // Start heartbeat manager
-        String heartbeatRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
-        Event heartbeatEvent = EventFactory.createEvent(EventTypes.HEARTBEAT);
-        heartBeatManager = new HeartBeatRunnable(this.eventManager, heartbeatRequestUrl, heartbeatEvent, this.snOptions.getHeartBeatInterval());
-        heartBeatManager.run();
+        Logger.getLogger().debug("Starting heartbeat manager");
+        this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), this.heartbeatTask());
+        heartbeat.execute();
 
         // Start configuration updater
-        String confRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
-        Event confEvent = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
-        configurationUpdater = new ConfigurationUpdaterRunnable(this.eventManager, confRequestUrl, confEvent, this.configUpdateTimestamp);
-        configurationUpdater.run();
+        Logger.getLogger().debug("Starting configuration update manager");
+        this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), this.configUpdaterTask());
+        configurationUpdater.execute();
 
         if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
             Logger.getLogger().debug("Failed to perform agent login: Invalid api key id");
@@ -173,12 +169,8 @@ public class SecureNative {
         Event event = EventFactory.createEvent(EventTypes.AGENT_LOG_OUT);
         try {
             this.eventManager.sendAgentEvent(event, requestUrl);
-            if (this.configurationUpdater.isRunning()) {
-                this.configurationUpdater.interrupt();
-            }
-            if (this.heartBeatManager.isRunning()) {
-                this.heartBeatManager.interrupt();
-            }
+            this.heartbeat.shutdown();
+            this.configurationUpdater.shutdown();
             Logger.getLogger().debug("Agent successfully logged-out");
             return true;
         } catch (Exception e) {
@@ -203,9 +195,9 @@ public class SecureNative {
             // obtain session
             RetryPolicy<Object> retryPolicy = new RetryPolicy<>()
                     .handle(Exception.class)
-                    .withDelay(Duration.ofSeconds((long)(Math.ceil(Math.random() *10) + 1) * 10))
+                    .withDelay(Duration.ofSeconds((long) (Math.ceil(Math.random() * 10) + 1) * 10))
                     .withMaxRetries(3);
-            String sessionId =  Failsafe.with(retryPolicy).get(this::agentLogin);
+            String sessionId = Failsafe.with(retryPolicy).get(this::agentLogin);
 
             if (sessionId != null) {
                 sessionId = parseSessionId(sessionId);
@@ -241,31 +233,47 @@ public class SecureNative {
         return session.getString("sessionId");
     }
 
+    public SecureNativeOptions getSecureNativeOptions() {
+        return this.snOptions;
+    }
+
+    private Runnable heartbeatTask() {
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
+        Event event = EventFactory.createEvent(EventTypes.HEARTBEAT);
+        return () -> this.eventManager.sendAsync(event, requestUrl);
+    }
+
+    private Runnable configUpdaterTask() {
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
+        Event event = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
+        return () -> this.eventManager.sendAsync(event, requestUrl);
+    }
+
+    // SDK event
     public void track(Event event) {
         Logger.getLogger().info("Track event call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
         this.eventManager.sendAsync(event, requestUrl);
     }
 
+    // SDK event
     public RiskResult verify(Event event) {
         Logger.getLogger().info("Verify event call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
     }
 
-    public RiskResult flow(long flowId, Event event) {  // For future purposes
+    // SDK event
+    public RiskResult flow(long flowId, Event event) {
         Logger.getLogger().info("Flow event call");
         String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
         return this.eventManager.sendSync(event, requestUrl);
     }
 
+    // SDK event
     public RiskResult risk(Event event) {
         Logger.getLogger().info("Risk call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
-    }
-
-    public SecureNativeOptions getSecureNativeOptions() {
-        return this.snOptions;
     }
 }

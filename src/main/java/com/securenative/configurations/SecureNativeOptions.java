@@ -27,20 +27,32 @@ public class SecureNativeOptions {
     private String minSupportedVersion;
     @JsonProperty("hostId")
     private String hostId;
-    @JsonProperty("heartBeatInterval")
-    private long heartBeatInterval;
     @JsonProperty("cookieName")
     private String cookieName;
+    @JsonProperty("heartbeatDelay")
+    private long heartbeatDelay;
+    @JsonProperty("heartbeatPeriod")
+    private long heartbeatPeriod;
+    @JsonProperty("configUpdatePeriod")
+    private long configUpdatePeriod;
+    @JsonProperty("configUpdateDelay")
+    private long configUpdateDelay;
 
     public SecureNativeOptions() {
         this.autoSend = true;
         this.isSdkEnabled = true;
         this.debugMode = false;
+        this.isAgentDisable = false;
+        this.configUpdatePeriod = 60 * 5 * 1000;
+        this.heartbeatPeriod = 60 * 5 * 1000;
+        this.configUpdateDelay = 60 * 1000;
+        this.heartbeatDelay = 60 * 1000;
     }
 
-    public SecureNativeOptions(String apiKey, Boolean isAgentDisable, String appName, String apiUrl, int interval, long maxEvents, int timeout, boolean autoSend, boolean isSdkEnabled, boolean debugMode, String hostId, long heartBeatInterval) {
+    public SecureNativeOptions(String apiKey, Boolean isAgentDisable, String appName, String apiUrl, int interval,
+                               long maxEvents, int timeout, boolean autoSend, boolean isSdkEnabled, boolean debugMode,
+                               String hostId, long heartbeatDelay, long heartbeatPeriod, long configUpdatePeriod, long configUpdateDelay) {
         this.interval = interval;
-        this.heartBeatInterval = heartBeatInterval;
         this.maxEvents = maxEvents;
         this.apiUrl = apiUrl;
         this.timeout = timeout;
@@ -51,6 +63,10 @@ public class SecureNativeOptions {
         this.apiKey = apiKey;
         this.isAgentDisable = isAgentDisable;
         this.hostId = hostId;
+        this.heartbeatDelay = heartbeatDelay;
+        this.heartbeatPeriod = heartbeatPeriod;
+        this.configUpdatePeriod = configUpdatePeriod;
+        this.configUpdateDelay = configUpdateDelay;
     }
 
     public Boolean isAgentDisable() {
@@ -168,19 +184,43 @@ public class SecureNativeOptions {
         this.hostId = hostId;
     }
 
-    public long getHeartBeatInterval() {
-        return heartBeatInterval;
-    }
-
-    public void setHeartBeatInterval(long heartBeatInterval) {
-        this.heartBeatInterval = heartBeatInterval;
-    }
-
     public String getCookieName() {
         return cookieName;
     }
 
     public void setCookieName(String cookieName) {
         this.cookieName = cookieName;
+    }
+
+    public long getHeartbeatDelay() {
+        return heartbeatDelay;
+    }
+
+    public long getHeartbeatPeriod() {
+        return heartbeatPeriod;
+    }
+
+    public long getConfigUpdatePeriod() {
+        return configUpdatePeriod;
+    }
+
+    public long getConfigUpdateDelay() {
+        return configUpdateDelay;
+    }
+
+    public void setHeartbeatDelay(long heartbeatDelay) {
+        this.heartbeatDelay = heartbeatDelay;
+    }
+
+    public void setHeartbeatPeriod(long heartbeatPeriod) {
+        this.heartbeatPeriod = heartbeatPeriod;
+    }
+
+    public void setConfigUpdatePeriod(long configUpdatePeriod) {
+        this.configUpdatePeriod = configUpdatePeriod;
+    }
+
+    public void setConfigUpdateDelay(long configUpdateDelay) {
+        this.configUpdateDelay = configUpdateDelay;
     }
 }

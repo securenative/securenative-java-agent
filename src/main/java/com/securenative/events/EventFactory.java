@@ -25,15 +25,15 @@ public class EventFactory {
             String appName = (String) args[1];
             return new ConfigEvent(hostId, appName);
         } else if (eventType == EventTypes.HEARTBEAT) {
-            new AgentHeartBeatEvent();
+            return new AgentHeartBeatEvent();
         } else if (eventType == EventTypes.REQUEST) {
             RequestOptions options = (RequestOptions) args[0];
-            new RequestEvent(options);
+            return new RequestEvent(options);
         } else if (eventType == EventTypes.SDK) {
             ServletRequest request = (ServletRequest) args[0];
             EventOptions eventOptions = (EventOptions) args[1];
             SecureNativeOptions snOptions = (SecureNativeOptions) args[2];
-            new SDKEvent(request, eventOptions, snOptions);
+            return new SDKEvent(request, eventOptions, snOptions);
         }
         return null;
     }
