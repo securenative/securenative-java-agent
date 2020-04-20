@@ -19,7 +19,7 @@ public class RequestEvent implements Event {
     private String fp;
     private String cid;
     private String vid;
-    private long ts;
+    private String timestamp;
 
     public RequestEvent(RequestOptions options) {
         this.eventType = EventTypes.REQUEST.getType();
@@ -35,7 +35,7 @@ public class RequestEvent implements Event {
         this.fp = options.getFp();
         this.cid = options.getCid();
         this.vid = options.getVid();
-        this.ts = options.getTs();
+        this.timestamp = options.getTimestamp();
     }
 
     @Override
@@ -91,8 +91,8 @@ public class RequestEvent implements Event {
         return vid;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public void setHostId(String hostId) {

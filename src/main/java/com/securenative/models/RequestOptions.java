@@ -15,9 +15,9 @@ public class RequestOptions {
     private String fp;
     private String cid;
     private String vid;
-    private long ts;
+    private String timestamp;
 
-    public RequestOptions(String hostId, String appName, String url, String method, String userAgent, Map<String, String> headers, String body, String ip, String remoteIp, String fp, String cid, String vid, long ts) {
+    public RequestOptions(String hostId, String appName, String url, String method, String userAgent, Map<String, String> headers, String body, String ip, String remoteIp, String fp, String cid, String vid, String timestamp) {
         this.hostId = hostId;
         this.appName = appName;
         this.url = url;
@@ -30,7 +30,7 @@ public class RequestOptions {
         this.fp = fp;
         this.cid = cid;
         this.vid = vid;
-        this.ts = ts;
+        this.timestamp = timestamp;
     }
 
     public String getHostId() {
@@ -81,7 +81,7 @@ public class RequestOptions {
         return vid;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 }

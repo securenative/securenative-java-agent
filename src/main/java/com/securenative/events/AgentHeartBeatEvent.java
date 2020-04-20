@@ -17,12 +17,12 @@ public class AgentHeartBeatEvent implements Event {
     private String hostId;
     private String hostname;
     private String agentVersion;
-    private long ts;
-    private static PackageItem agentPackage = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+    private String timestamp;
+    private static SnPackage agentPackage = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
 
     public AgentHeartBeatEvent() {
         this.eventType = EventTypes.HEARTBEAT.getType();
-        this.ts = ZonedDateTime.now().toEpochSecond();
+        this.timestamp = Utils.generateTimestamp();
         try {
             this.hostname = InetAddress.getLocalHost().getHostName();
             this.hostId = Utils.calculateHash(InetAddress.getLocalHost().getHostAddress());
@@ -54,8 +54,8 @@ public class AgentHeartBeatEvent implements Event {
         return agentVersion;
     }
 
-    public long getTs() {
-        return ts;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public void setRuntime(String runtime) {
