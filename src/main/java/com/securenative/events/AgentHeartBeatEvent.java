@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 
 public class AgentHeartBeatEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "/pom.xml";
-    private String eventType;
+    private final String eventType;
     private String runtime;
     private String hostId;
     private String hostname;
@@ -56,5 +56,29 @@ public class AgentHeartBeatEvent implements Event {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public void setAgentVersion(String agentVersion) {
+        this.agentVersion = agentVersion;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
+    }
+
+    public static void setAgentPackage(SnPackage agentPackage) {
+        AgentHeartBeatEvent.agentPackage = agentPackage;
     }
 }

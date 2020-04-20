@@ -142,11 +142,11 @@ public class SecureNative {
         AgentLoginResponse res = mapper.readValue(r, AgentLoginResponse.class);
 
         // Update config
-        this.handleConfigUpdate(res.config);
+        this.handleConfigUpdate(res.getConfig());
 
         // Start heartbeat manager
         String heartbeatRequestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
-        Event heartbeatEvent = EventFactory.createEvent(EventTypes.ERROR, this.snOptions.getAppName());
+        Event heartbeatEvent = EventFactory.createEvent(EventTypes.HEARTBEAT);
         heartBeatManager = new HeartBeatRunnable(this.eventManager, heartbeatRequestUrl, heartbeatEvent, this.snOptions.getHeartBeatInterval());
         heartBeatManager.run();
 

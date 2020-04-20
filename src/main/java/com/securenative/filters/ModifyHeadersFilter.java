@@ -19,8 +19,8 @@ public class ModifyHeadersFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
-        String key = this.rule.data.key;
-        String value = this.rule.data.value;
+        String key = this.rule.getData().key;
+        String value = this.rule.getData().value;
 
         httpRes.setHeader(key, value);
         filterChain.doFilter(servletRequest, servletResponse);

@@ -23,8 +23,7 @@ public class EventFactory {
         } else if (eventType == EventTypes.CONFIG) {
             String hostId = (String) args[0];
             String appName = (String) args[1];
-            Long ts = (Long) args[2];
-            return new ConfigEvent(hostId, appName, ts);
+            return new ConfigEvent(hostId, appName);
         } else if (eventType == EventTypes.HEARTBEAT) {
             new AgentHeartBeatEvent();
         } else if (eventType == EventTypes.REQUEST) {

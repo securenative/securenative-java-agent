@@ -6,7 +6,7 @@ import com.securenative.models.RequestOptions;
 import java.util.Map;
 
 public class RequestEvent implements Event {
-    private String eventType;
+    private final String eventType;
     private String hostId;
     private String appName;
     private String url;
@@ -93,5 +93,57 @@ public class RequestEvent implements Event {
 
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setRemoteIp(String remoteIp) {
+        this.remoteIp = remoteIp;
+    }
+
+    public void setFp(String fp) {
+        this.fp = fp;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
     }
 }

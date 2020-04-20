@@ -19,7 +19,7 @@ public class DeleteHeaderFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
-        String key = this.rule.data.key;
+        String key = this.rule.getData().key;
 
         if (httpRes.containsHeader(key)) {
             httpRes.setHeader(key, "");
