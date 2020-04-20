@@ -4,8 +4,8 @@ import com.securenative.configurations.ConfigurationManager;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.module.ModuleManager;
-import com.securenative.packagemanager.PackageManager;
-import com.securenative.packagemanager.SnPackage;
+import com.securenative.snpackage.PackageManager;
+import com.securenative.snpackage.PackageItem;
 import com.securenative.utils.Utils;
 
 import java.lang.instrument.Instrumentation;
@@ -15,7 +15,7 @@ public class SecureNativeAgent {
         try {
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
-            SnPackage appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+            PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
             SecureNativeOptions config = ConfigurationManager.getConfig();
 
             // Set default app name

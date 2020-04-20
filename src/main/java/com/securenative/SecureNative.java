@@ -10,7 +10,7 @@ import com.securenative.configurations.HeartBeatRunnable;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.events.Event;
 import com.securenative.events.EventFactory;
-import com.securenative.events.SnEventManager;
+import com.securenative.events.EventManager;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.interceptors.InterceptorManager;
 import com.securenative.models.AgentLoginResponse;
@@ -35,7 +35,7 @@ public class SecureNative {
     private final int DEFAULT_TIMEOUT = 1500;
 
     private Boolean isAgentStarted = false;
-    private SnEventManager eventManager;
+    private EventManager eventManager;
     private SecureNativeOptions snOptions;
     private String apiKey;
     private ObjectMapper mapper;
@@ -50,7 +50,7 @@ public class SecureNative {
         this.apiKey = snOptions.getApiKey();
         this.snOptions = initializeOptions(snOptions);
         Logger.setLoggingEnable(this.snOptions.getDebugMode());
-        this.eventManager = new SnEventManager(this.apiKey, this.snOptions);
+        this.eventManager = new EventManager(this.apiKey, this.snOptions);
         this.moduleManager = moduleManager;
         this.snOptions = snOptions;
         this.ruleManager = new RuleManager();
@@ -208,7 +208,7 @@ public class SecureNative {
 
             if (sessionId != null) {
                 sessionId = parseSessionId(sessionId);
-                InterceptorManager.applyAgentInterceptor(sessionId);
+                InterceptorManager.applyAgentInterceptor(sessionId, this.moduleManager.getFramework());
                 this.isAgentStarted = true;
                 Logger.getLogger().debug("Agent successfully started!");
             } else {

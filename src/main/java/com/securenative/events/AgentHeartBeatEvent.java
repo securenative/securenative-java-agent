@@ -2,8 +2,8 @@ package com.securenative.events;
 
 import com.securenative.Logger;
 import com.securenative.models.EventTypes;
-import com.securenative.packagemanager.PackageManager;
-import com.securenative.packagemanager.SnPackage;
+import com.securenative.snpackage.PackageManager;
+import com.securenative.snpackage.PackageItem;
 import com.securenative.utils.Utils;
 
 import java.net.InetAddress;
@@ -78,7 +78,7 @@ public class AgentHeartBeatEvent implements Event {
         this.ts = ts;
     }
 
-    public static void setAgentPackage(SnPackage agentPackage) {
+    public static void setAgentPackage(PackageItem agentPackage) {
         AgentHeartBeatEvent.agentPackage = agentPackage;
     }
 }

@@ -3,10 +3,10 @@ package com.securenative.events;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.models.EventTypes;
 import com.securenative.Logger;
-import com.securenative.packagemanager.PackageManager;
-import com.securenative.packagemanager.SnPackage;
 import com.securenative.utils.Utils;
 import javafx.util.Pair;
+import com.securenative.snpackage.PackageManager;
+import com.securenative.snpackage.PackageItem;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,7 +20,7 @@ public class AgentLoginEvent implements Event {
     @JsonProperty("timestamp")
     private String timestamp;
     @JsonProperty("package")
-    private SnPackage snPackage;
+    private PackageItem packageItem;
     @JsonProperty("appName")
     private String appName;
     @JsonProperty("process")
@@ -37,13 +37,13 @@ public class AgentLoginEvent implements Event {
     public AgentLoginEvent(String framework, String frameworkVersion, String appName) {
         String cwd = System.getProperty("user.dir");
 
-        SnPackage appPkg = PackageManager.getPackage(String.join(cwd, PACKAGE_FILE_NAME));
-        SnPackage agentPkg = PackageManager.getPackage(String.join("/sdk-base/", PACKAGE_FILE_NAME));
+        PackageItem appPkg = PackageManager.getPackage(String.join(cwd, PACKAGE_FILE_NAME));
+        PackageItem agentPkg = PackageManager.getPackage(String.join("/sdk-base/", PACKAGE_FILE_NAME));
 
         this.appName = appName;
         this.framework = new Framework(framework, frameworkVersion);
 
-        this.snPackage = new SnPackage(appPkg.getName(), appPkg.getVersion(), appPkg.getDependencies(), appPkg.getDependenciesHash());
+        this.packageItem = new PackageItem(appPkg.getName(), appPkg.getVersion(), appPkg.getDependencies(), appPkg.getDependenciesHash());
 
         this.eventType = EventTypes.AGENT_LOG_IN.getType();
 
@@ -80,8 +80,8 @@ public class AgentLoginEvent implements Event {
         return timestamp;
     }
 
-    public SnPackage getSnPackage() {
-        return snPackage;
+    public PackageItem getPackageItem() {
+        return packageItem;
     }
 
     public String getAppName() {
@@ -112,8 +112,8 @@ public class AgentLoginEvent implements Event {
         this.ts = ts;
     }
 
-    public void setSnPackage(SnPackage snPackage) {
-        this.snPackage = snPackage;
+    public void setPackageItem(PackageItem packageItem) {
+        this.packageItem = packageItem;
     }
 
     public void setAppName(String appName) {
