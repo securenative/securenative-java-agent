@@ -15,7 +15,7 @@ public class RuleManager {
     public List<Rule> getRules(String method) {
         List<Rule> r = new ArrayList<>();
         for (Rule rule : rules) {
-            if (rule.interception.method.equals(method)) {
+            if (rule.getInterception().getMethod().equals(method)) {
                 r.add(rule);
             }
         }
@@ -36,11 +36,11 @@ public class RuleManager {
         clean();
 
         for (Rule rule : rules) {
-            RuleData data = rule.data;
-            RuleInterception interception = rule.interception;
-            String module = interception.module;
-            String method = interception.method;
-            String processor = interception.processor;
+            RuleData data = rule.getData();
+            RuleInterception interception = rule.getInterception();
+            String module = interception.getModule();
+            String method = interception.getMethod();
+            String processor = interception.getProcessor();
 
             String[] m = method.split(":");
             String func = "";

@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 public class ErrorEvent implements Event {
     private String message;
     private String stackTrace;
-    private String eventType;
+    private final String eventType;
     private long ts;
 
     public ErrorEvent(String stackTrace, String message) {
@@ -31,5 +31,17 @@ public class ErrorEvent implements Event {
 
     public long getTs() {
         return ts;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
     }
 }

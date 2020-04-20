@@ -5,7 +5,7 @@ import com.securenative.models.EventTypes;
 import java.time.ZonedDateTime;
 
 public class AgentLogoutEvent implements Event {
-    private String eventType;
+    private final String eventType;
     private long ts;
 
     public AgentLogoutEvent() {
@@ -20,5 +20,9 @@ public class AgentLogoutEvent implements Event {
 
     public long getTs() {
         return ts;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
     }
 }

@@ -14,7 +14,7 @@ public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
 
     @JsonProperty("eventType")
-    private String eventType;
+    private final String eventType;
     @JsonProperty("ts")
     private Long ts;
     @JsonProperty("package")
@@ -103,6 +103,38 @@ public class AgentLoginEvent implements Event {
 
     public Agent getAgent() {
         return agent;
+    }
+
+    public void setTs(Long ts) {
+        this.ts = ts;
+    }
+
+    public void setSnPackage(SnPackage snPackage) {
+        this.snPackage = snPackage;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public void setProcess(SnProcess process) {
+        this.process = process;
+    }
+
+    public void setSnRuntime(SnRuntime snRuntime) {
+        this.snRuntime = snRuntime;
+    }
+
+    public void setOs(Os os) {
+        this.os = os;
+    }
+
+    public void setFramework(Framework framework) {
+        this.framework = framework;
+    }
+
+    public void setAgent(Agent agent) {
+        this.agent = agent;
     }
 }
 

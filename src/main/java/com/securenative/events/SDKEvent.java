@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SDKEvent implements Event {
-    private String eventType;
+    private final String eventType;
     private String cid;
     private String vid;
     private String fp;
@@ -61,12 +61,6 @@ public class SDKEvent implements Event {
             this.fp = clientFP.getString("fp");
         } catch (JSONException e) {
             Logger.getLogger().error("Could not decode json object; %s", e);
-        }
-
-        if (eventOptions.getEventType() != null) {
-            this.eventType = eventOptions.getEventType();
-        } else {
-            this.eventType = EventTypes.LOG_IN.getType();
         }
 
         if (eventOptions.getIp() != null && !eventOptions.getIp().equals("")) {
@@ -137,5 +131,45 @@ public class SDKEvent implements Event {
 
     public Map<String, String> getParams() {
         return params;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public void setVid(String vid) {
+        this.vid = vid;
+    }
+
+    public void setFp(String fp) {
+        this.fp = fp;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setRemoteIp(String remoteIp) {
+        this.remoteIp = remoteIp;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTs(long ts) {
+        this.ts = ts;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
     }
 }
