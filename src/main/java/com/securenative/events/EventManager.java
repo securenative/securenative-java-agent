@@ -198,6 +198,7 @@ public class EventManager implements IEventManager {
     }
 
     public void flush() {
+        Logger.getLogger().debug("Flushing event queue");
         for (Message message : this.events) {
             this.sendSync(message.getEvent(), message.getUrl());
         }

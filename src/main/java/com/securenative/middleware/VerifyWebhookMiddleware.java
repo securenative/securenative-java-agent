@@ -41,7 +41,7 @@ public class VerifyWebhookMiddleware implements Filter {
             filterChain.doFilter(req, res);
             return;
         }
-        Logger.getLogger().info("Request have been blocked due to incompatible signature");
+        Logger.getLogger().debug("Request have been blocked due to incompatible signature");
         res.sendError(401, "Unauthorized");
         filterChain.doFilter(servletRequest, servletResponse);
     }

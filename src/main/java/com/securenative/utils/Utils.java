@@ -81,7 +81,7 @@ public class Utils {
     public static String decrypt(String s, String key)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException,
             IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        Logger.getLogger().info("Starting to decrypt " + s);
+        Logger.getLogger().debug("Starting to decrypt " + s);
         if (s == null || s.length() == 0) {
             return s;
         }

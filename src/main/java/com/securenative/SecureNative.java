@@ -26,29 +26,20 @@ import org.json.JSONObject;
 import java.time.Duration;
 
 public class SecureNative {
-    private final String API_URL = "https://api.securenative.com/collector/api/v1";
-    private final int INTERVAL = 1000;
-    private final int MAX_EVENTS = 1000;
-    private final Boolean AUTO_SEND = true;
-    private final Boolean SDK_ENABLED = true;
-    private final Boolean DEBUG_LOG = false;
-    private final int DEFAULT_TIMEOUT = 1500;
     private String configUpdateTimestamp = Utils.generateTimestamp();
-
     private Boolean isAgentStarted = false;
-    private EventManager eventManager;
+    private final EventManager eventManager;
     private SecureNativeOptions snOptions;
-    private String apiKey;
-    private ObjectMapper mapper;
-    private RuleManager ruleManager;
+    private final String apiKey;
+    private final ObjectMapper mapper;
+    private final RuleManager ruleManager;
     private ExecuteManager heartbeat;
     private ExecuteManager configurationUpdater;
-    private ModuleManager moduleManager;
+    private final ModuleManager moduleManager;
 
     public SecureNative(ModuleManager moduleManager, SecureNativeOptions snOptions) throws SecureNativeSDKException {
+        this.snOptions = snOptions;
         this.apiKey = snOptions.getApiKey();
-        this.snOptions = initializeOptions(snOptions);
-        Logger.setLoggingEnable(this.snOptions.getDebugMode());
         this.eventManager = new EventManager(this.apiKey, this.snOptions);
         this.moduleManager = moduleManager;
         this.snOptions = snOptions;
@@ -59,45 +50,6 @@ public class SecureNative {
             // apply interceptors
             InterceptorManager.applyModuleInterceptors(this);
         }
-    }
-
-    private SecureNativeOptions initializeOptions(SecureNativeOptions options) {
-        if (options == null) {
-            Logger.getLogger().info("SecureNative options are empty, initializing default values");
-            options = new SecureNativeOptions();
-        }
-        if (Utils.isNullOrEmpty(options.getApiUrl())) {
-            options.setApiUrl(API_URL);
-        }
-
-        if (options.getInterval() == 0) {
-            options.setInterval(INTERVAL);
-        }
-
-        if (options.getAgentDisable() == null) {
-            options.setAgentDisable(false);
-        }
-
-        if (options.getMaxEvents() == 0) {
-            options.setMaxEvents(MAX_EVENTS);
-        }
-        if (options.isAutoSend() == null) {
-            options.setAutoSend(AUTO_SEND);
-        }
-        if (options.getSdkEnabled() == null) {
-            options.setSdkEnabled(SDK_ENABLED);
-        }
-        if (options.getDebugMode() == null) {
-            options.setSdkEnabled(DEBUG_LOG);
-        }
-        if (options.getTimeout() == 0) {
-            options.setTimeout(DEFAULT_TIMEOUT);
-        }
-        if (options.getDebugMode() == null) {
-            options.setDebugMode(false);
-        }
-
-        return options;
     }
 
     private void handleConfigUpdate(AgentConfigOptions config) {
@@ -142,16 +94,6 @@ public class SecureNative {
 
         // Update config
         this.handleConfigUpdate(res.getConfig());
-
-        // Start heartbeat manager
-        Logger.getLogger().debug("Starting heartbeat manager");
-        this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), this.heartbeatTask());
-        heartbeat.execute();
-
-        // Start configuration updater
-        Logger.getLogger().debug("Starting configuration update manager");
-        this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), this.configUpdaterTask());
-        configurationUpdater.execute();
 
         if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
             Logger.getLogger().debug("Failed to perform agent login: Invalid api key id");
@@ -203,6 +145,17 @@ public class SecureNative {
                 sessionId = parseSessionId(sessionId);
                 InterceptorManager.applyAgentInterceptor(sessionId, this.moduleManager.getFramework());
                 this.isAgentStarted = true;
+
+                // Start heartbeat manager
+                Logger.getLogger().debug("Starting heartbeat manager");
+                this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), this.heartbeatTask());
+                heartbeat.execute();
+
+                // Start configuration updater
+                Logger.getLogger().debug("Starting configuration update manager");
+                this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), this.configUpdaterTask());
+                configurationUpdater.execute();
+
                 Logger.getLogger().debug("Agent successfully started!");
             } else {
                 Logger.getLogger().debug("No session obtained, unable to start agent!");
@@ -254,30 +207,8 @@ public class SecureNative {
         return () -> this.handleConfigUpdate(config);
     }
 
-    // SDK event
-    public void track(Event event) {
-        Logger.getLogger().info("Track event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
-        this.eventManager.sendAsync(event, requestUrl);
-    }
-
-    // SDK event
-    public RiskResult verify(Event event) {
-        Logger.getLogger().info("Verify event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
-        return this.eventManager.sendSync(event, requestUrl);
-    }
-
-    // SDK event
-    public RiskResult flow(long flowId, Event event) {
-        Logger.getLogger().info("Flow event call");
-        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
-        return this.eventManager.sendSync(event, requestUrl);
-    }
-
-    // SDK event
     public RiskResult risk(Event event) {
-        Logger.getLogger().info("Risk call");
+        Logger.getLogger().debug("Risk call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
     }

@@ -22,6 +22,10 @@ public class SecureNativeAgent {
             // Set default app name
             config.setAppName(appPkg.getName());
 
+            // Init logger
+            Logger.setLoggingEnable(true);
+            Logger.getLogger().debug(String.format("Loaded Configurations %s", config.toString()));
+
             // Get relevant module
             ModuleManager moduleManager = new ModuleManager(appPkg);
             SecureNative secureNative = null;
@@ -29,12 +33,9 @@ public class SecureNativeAgent {
                 secureNative = new SecureNative(moduleManager, config);
             } catch (SecureNativeSDKException e) {
                 Logger.getLogger().error("Could not find securenative api key. aborting.");
+                System.err.println("Could not find securenative api key. aborting.");
                 System.exit(1);
             }
-
-            // Init logger
-            Logger.setLoggingEnable(true);
-            Logger.getLogger().debug(String.format("Loaded Configurations %s", config.toString()));
 
             // Start agent
             Logger.getLogger().debug("Starting version compatibility check");
