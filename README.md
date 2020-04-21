@@ -53,10 +53,13 @@ EOF
 | SECURENATIVE_API_KEY | string | false | none | SecureNative api key |
 | SECURENATIVE_APP_NAME | string | false | package.json | Name of application source |
 | SECURENATIVE_API_URL | string | true | https://api.securenative.com/v1/collector | Default api base address|
-| SECURENATIVE_INTERVAL| number | true | 1000 | Default interval for SDK to try to persist events|
-| SECURENATIVE_HEARTBEAT_INTERVAL| number | true | 1000 | Default agent hearbeat interval|    
-| SECURENATIVE_MAX_EVENTS | number | true | 1000 | Max in-memory events queue| 
-| SECURENATIVE_TIMEOUT | number | true | 1500 | API call timeout in ms|
+| SECURENATIVE_INTERVAL| long | true | 1000 | Default interval for SDK to try to persist events|
+| SECURENATIVE_HEARTBEAT_DELAY | long | true | 0 | Default agent heartbeat delay|
+| SECURENATIVE_HEARTBEAT_PERIOD | long | true | 6000 | Default agent heartbeat period|
+| SECURENATIVE_CONFIG_DELAY | long | true | 0 | Default agent config delay|
+| SECURENATIVE_CONFIG_PERIOD | long | true | 6000 | Default agent config period|    
+| SECURENATIVE_MAX_EVENTS | long | true | 1000 | Max in-memory events queue| 
+| SECURENATIVE_TIMEOUT | long | true | 1500 | API call timeout in ms|
 | SECURENATIVE_AUTO_SEND | Boolean | true | true | Should api auto send the events|
 | SECURENATIVE_DISABLE | Boolean | true | true | Allow to disable agent functionality |
 | SECURENATIVE_DEBUG_MODE | Boolean | true | false | Displays debug info to stdout |

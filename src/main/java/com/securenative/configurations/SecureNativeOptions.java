@@ -43,10 +43,10 @@ public class SecureNativeOptions {
         this.isSdkEnabled = true;
         this.debugMode = false;
         this.isAgentDisable = false;
-        this.configUpdatePeriod = 60 * 5 * 1000;
+        this.configUpdatePeriod = 60 * 15 * 1000;
         this.heartbeatPeriod = 60 * 5 * 1000;
-        this.configUpdateDelay = 60 * 1000;
-        this.heartbeatDelay = 60 * 1000;
+        this.configUpdateDelay = 0;
+        this.heartbeatDelay = 0;
     }
 
     public SecureNativeOptions(String apiKey, Boolean isAgentDisable, String appName, String apiUrl, int interval,

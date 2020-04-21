@@ -63,6 +63,46 @@ public class ConfigurationManager {
                 }
             }
 
+            if (fileConfig != null && fileConfig.getHeartbeatPeriod() != 0) {
+                config.setHeartbeatPeriod(fileConfig.getHeartbeatPeriod());
+            } else {
+                if (System.getenv("SECURENATIVE_HEARTBEAT_PERIOD") != null) {
+                    config.setHeartbeatPeriod(Integer.parseInt(System.getenv("SECURENATIVE_HEARTBEAT_PERIOD")));
+                } else {
+                    config.setHeartbeatPeriod(60 * 5 * 1000);
+                }
+            }
+
+            if (fileConfig != null && fileConfig.getHeartbeatDelay() != 0) {
+                config.setHeartbeatDelay(fileConfig.getHeartbeatDelay());
+            } else {
+                if (System.getenv("SECURENATIVE_HEARTBEAT_DELAY") != null) {
+                    config.setHeartbeatDelay(Integer.parseInt(System.getenv("SECURENATIVE_HEARTBEAT_DELAY")));
+                } else {
+                    config.setHeartbeatDelay(0);
+                }
+            }
+
+            if (fileConfig != null && fileConfig.getConfigUpdatePeriod() != 0) {
+                config.setConfigUpdatePeriod(fileConfig.getConfigUpdatePeriod());
+            } else {
+                if (System.getenv("SECURENATIVE_CONFIG_PERIOD") != null) {
+                    config.setConfigUpdatePeriod(Integer.parseInt(System.getenv("SECURENATIVE_CONFIG_PERIOD")));
+                } else {
+                    config.setConfigUpdatePeriod(60 * 15 * 1000);
+                }
+            }
+
+            if (fileConfig != null && fileConfig.getConfigUpdateDelay() != 0) {
+                config.setConfigUpdateDelay(fileConfig.getConfigUpdateDelay());
+            } else {
+                if (System.getenv("SECURENATIVE_CONFIG_DELAY") != null) {
+                    config.setConfigUpdateDelay(Integer.parseInt(System.getenv("SECURENATIVE_CONFIG_DELAY")));
+                } else {
+                    config.setConfigUpdateDelay(0);
+                }
+            }
+
             if (fileConfig != null && fileConfig.getMaxEvents() != 0) {
                 config.setMaxEvents(fileConfig.getMaxEvents());
             } else {

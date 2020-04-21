@@ -240,13 +240,18 @@ public class SecureNative {
     private Runnable heartbeatTask() {
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
         Event event = EventFactory.createEvent(EventTypes.HEARTBEAT);
+        Logger.getLogger().debug("Sending heartbeat event");
+
         return () -> this.eventManager.sendAsync(event, requestUrl);
     }
 
     private Runnable configUpdaterTask() {
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
         Event event = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
-        return () -> this.eventManager.sendAsync(event, requestUrl);
+        Logger.getLogger().debug("Sending configuration update event");
+
+        AgentConfigOptions config = this.eventManager.sendUpdateConfigEvent(event, requestUrl);
+        return () -> this.handleConfigUpdate(config);
     }
 
     // SDK event
