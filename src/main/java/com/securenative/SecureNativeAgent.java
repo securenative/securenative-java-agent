@@ -9,9 +9,10 @@ import com.securenative.snpackage.PackageItem;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
+import java.lang.instrument.Instrumentation;
+
 public class SecureNativeAgent {
-//    public static void premain(String args, Instrumentation inst) {
-public static void main(String[] args) {
+    public static void premain(String args, Instrumentation inst) {
         try {
             // Init logger
             Logger.initLogger();
