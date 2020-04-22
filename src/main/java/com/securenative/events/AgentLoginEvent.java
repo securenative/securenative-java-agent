@@ -65,7 +65,7 @@ public class AgentLoginEvent implements Event {
         }
         this.os = new Os(hostId, hostname, System.getProperty("os.arch"), System.getProperty("os.name"), Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().totalMemory());
 
-        this.agent = new Agent("Java", agentPkg.getVersion(), System.getProperty("java.class.path"));
+        this.agent = new Agent("Server Agent", agentPkg.getVersion(), System.getProperty("java.class.path"));
 
         this.timestamp = Utils.generateTimestamp();
     }

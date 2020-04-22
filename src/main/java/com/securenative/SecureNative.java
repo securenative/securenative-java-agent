@@ -21,7 +21,6 @@ import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
-import org.json.JSONObject;
 
 import java.time.Duration;
 

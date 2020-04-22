@@ -40,6 +40,17 @@ public class EventFactory {
         } else if (eventType == EventTypes.LOG_IN) {
             User user = (User) args[0];
             return new LoginEvent(user);
+        } else if (eventType == EventTypes.LOG_OUT) {
+            User user = (User) args[0];
+            return new LogoutEvent(user);
+        } else if (eventType == EventTypes.LOG_IN_CHALLENGE) {
+            User user = (User) args[0];
+            return new LoginChallengeEvent(user);
+        } else if (eventType == EventTypes.LOG_IN_FAILURE) {
+            User user = (User) args[0];
+            return new LoginFailureEvent(user);
+        } else if (eventType == EventTypes.PERFORMANCE) {
+            return new PerformanceEvent();
         }
         return null;
     }
