@@ -9,11 +9,13 @@ import com.securenative.snpackage.PackageItem;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
-import java.lang.instrument.Instrumentation;
-
 public class SecureNativeAgent {
-    public static void premain(String args, Instrumentation inst) {
+//    public static void premain(String args, Instrumentation inst) {
+public static void main(String[] args) {
         try {
+            // Init logger
+            Logger.initLogger();
+
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
@@ -22,8 +24,11 @@ public class SecureNativeAgent {
             // Set default app name
             config.setAppName(appPkg.getName());
 
-            // Init logger
-            Logger.setLoggingEnable(true);
+            // Configure logger
+            if (config.isLoggingEnabled()) {
+                Logger.configureLogger();
+            }
+
             Logger.getLogger().debug(String.format("Loaded Configurations %s", config.toString()));
 
             // Get relevant module

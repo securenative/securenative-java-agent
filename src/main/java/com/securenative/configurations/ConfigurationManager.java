@@ -144,6 +144,16 @@ public class ConfigurationManager {
             }
 
             if (fileConfig != null) {
+                config.setLoggingEnabled(fileConfig.isLoggingEnabled());
+            } else {
+                if (System.getenv("SECURENATIVE_LOGGING_ENABLED") != null) {
+                    config.setLoggingEnabled(Boolean.parseBoolean(System.getenv("SECURENATIVE_LOGGING_ENABLED")));
+                } else {
+                    config.setLoggingEnabled(true);
+                }
+            }
+
+            if (fileConfig != null) {
                 config.setDebugMode(fileConfig.getDebugMode());
             } else {
                 if (System.getenv("SECURENATIVE_DEBUG_MODE") != null) {

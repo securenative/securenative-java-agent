@@ -37,6 +37,8 @@ public class SecureNativeOptions {
     private long configUpdatePeriod;
     @JsonProperty("configUpdateDelay")
     private long configUpdateDelay;
+    @JsonProperty("loggingEnabled")
+    private boolean loggingEnabled;
 
     public SecureNativeOptions() {
         this.autoSend = true;
@@ -47,11 +49,13 @@ public class SecureNativeOptions {
         this.heartbeatPeriod = 60 * 5 * 1000;
         this.configUpdateDelay = 0;
         this.heartbeatDelay = 0;
+        this.loggingEnabled = true;
     }
 
     public SecureNativeOptions(String apiKey, Boolean isAgentDisable, String appName, String apiUrl, int interval,
                                long maxEvents, int timeout, boolean autoSend, boolean isSdkEnabled, boolean debugMode,
-                               String hostId, long heartbeatDelay, long heartbeatPeriod, long configUpdatePeriod, long configUpdateDelay) {
+                               String hostId, long heartbeatDelay, long heartbeatPeriod, long configUpdatePeriod,
+                               long configUpdateDelay, boolean loggingEnabled) {
         this.interval = interval;
         this.maxEvents = maxEvents;
         this.apiUrl = apiUrl;
@@ -67,6 +71,7 @@ public class SecureNativeOptions {
         this.heartbeatPeriod = heartbeatPeriod;
         this.configUpdatePeriod = configUpdatePeriod;
         this.configUpdateDelay = configUpdateDelay;
+        this.loggingEnabled = loggingEnabled;
     }
 
     public Boolean isAgentDisable() {
@@ -81,7 +86,15 @@ public class SecureNativeOptions {
         this.autoSend = true;
         this.isSdkEnabled = true;
         this.debugMode = false;
+        this.loggingEnabled = true;
+    }
 
+    public boolean isLoggingEnabled() {
+        return loggingEnabled;
+    }
+
+    public void setLoggingEnabled(boolean loggingEnabled) {
+        this.loggingEnabled = loggingEnabled;
     }
 
     public String getAppName() {

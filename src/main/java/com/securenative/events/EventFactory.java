@@ -4,6 +4,7 @@ import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.models.EventOptions;
 import com.securenative.models.EventTypes;
 import com.securenative.models.RequestOptions;
+import com.securenative.models.User;
 
 import javax.servlet.ServletRequest;
 
@@ -34,6 +35,11 @@ public class EventFactory {
             EventOptions eventOptions = (EventOptions) args[1];
             SecureNativeOptions snOptions = (SecureNativeOptions) args[2];
             return new SDKEvent(request, eventOptions, snOptions);
+        } else if (eventType == EventTypes.VERIFY) {
+            return new VerifyEvent();
+        } else if (eventType == EventTypes.LOG_IN) {
+            User user = (User) args[0];
+            return new LoginEvent(user);
         }
         return null;
     }

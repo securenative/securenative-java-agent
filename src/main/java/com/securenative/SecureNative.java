@@ -142,18 +142,17 @@ public class SecureNative {
             String sessionId = Failsafe.with(retryPolicy).get(this::agentLogin);
 
             if (sessionId != null) {
-                sessionId = parseSessionId(sessionId);
                 InterceptorManager.applyAgentInterceptor(sessionId, this.moduleManager.getFramework());
                 this.isAgentStarted = true;
 
                 // Start heartbeat manager
                 Logger.getLogger().debug("Starting heartbeat manager");
-                this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), this.heartbeatTask());
+                this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), "heartbeat event", this.heartbeatTask());
                 heartbeat.execute();
 
                 // Start configuration updater
                 Logger.getLogger().debug("Starting configuration update manager");
-                this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), this.configUpdaterTask());
+                this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), "configuration update event", this.configUpdaterTask());
                 configurationUpdater.execute();
 
                 Logger.getLogger().debug("Agent successfully started!");
@@ -181,11 +180,6 @@ public class SecureNative {
         return apiKey;
     }
 
-    private String parseSessionId(String sessionId) {
-        final JSONObject session = new JSONObject(sessionId);
-        return session.getString("sessionId");
-    }
-
     public SecureNativeOptions getSecureNativeOptions() {
         return this.snOptions;
     }
@@ -193,16 +187,12 @@ public class SecureNative {
     private Runnable heartbeatTask() {
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.HEARTBEAT.getRoute());
         Event event = EventFactory.createEvent(EventTypes.HEARTBEAT);
-        Logger.getLogger().debug("Sending heartbeat event");
-
         return () -> this.eventManager.sendAsync(event, requestUrl);
     }
 
     private Runnable configUpdaterTask() {
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.CONFIG.getRoute());
         Event event = EventFactory.createEvent(EventTypes.CONFIG, this.snOptions.getHostId(), this.snOptions.getAppName());
-        Logger.getLogger().debug("Sending configuration update event");
-
         AgentConfigOptions config = this.eventManager.sendUpdateConfigEvent(event, requestUrl);
         return () -> this.handleConfigUpdate(config);
     }
@@ -210,6 +200,27 @@ public class SecureNative {
     public RiskResult risk(Event event) {
         Logger.getLogger().debug("Risk call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK.getRoute());
+        return this.eventManager.sendSync(event, requestUrl);
+    }
+
+    // SDK event
+    public void track(Event event) {
+        Logger.getLogger().info("Track event call");
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
+        this.eventManager.sendAsync(event, requestUrl);
+    }
+
+    // SDK event
+    public RiskResult verify(Event event) {
+        Logger.getLogger().info("Verify event call");
+        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
+        return this.eventManager.sendSync(event, requestUrl);
+    }
+
+    // SDK event
+    public RiskResult flow(long flowId, Event event) {
+        Logger.getLogger().info("Flow event call");
+        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
         return this.eventManager.sendSync(event, requestUrl);
     }
 }
