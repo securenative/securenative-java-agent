@@ -26,7 +26,7 @@ public class AgentHeartBeatEvent implements Event {
             this.hostname = InetAddress.getLocalHost().getHostName();
             this.hostId = Utils.calculateHash(InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            Logger.getLogger().error("Could not find host name; ", e);
+            Logger.getLogger().debug("Could not find host name; ", e);
         }
         this.agentVersion = AgentHeartBeatEvent.agentPackage.getVersion();
         this.runtime = "java";

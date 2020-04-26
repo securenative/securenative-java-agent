@@ -63,12 +63,12 @@ public class SecureNative {
         }
 
         // enforce all rules
-        if (config.getRules() != null) {
+        if (config.getRules() != null && config.getRules().size() > 0) {
             this.ruleManager.enforceRules(config.getRules());
         }
 
         // enforce all actions
-        if (config.getActions() != null) {
+        if (config.getActions() != null && config.getActions().size() > 0) {
             ActionManager.enforceActions(config.getActions());
         }
     }
@@ -204,21 +204,21 @@ public class SecureNative {
 
     // SDK event
     public void track(Event event) {
-        Logger.getLogger().info("Track event call");
+        Logger.getLogger().debug("Track event call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
         this.eventManager.sendAsync(event, requestUrl);
     }
 
     // SDK event
     public RiskResult verify(Event event) {
-        Logger.getLogger().info("Verify event call");
+        Logger.getLogger().debug("Verify event call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
         return this.eventManager.sendSync(event, requestUrl);
     }
 
     // SDK event
     public RiskResult flow(long flowId, Event event) {
-        Logger.getLogger().info("Flow event call");
+        Logger.getLogger().debug("Flow event call");
         String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
         return this.eventManager.sendSync(event, requestUrl);
     }

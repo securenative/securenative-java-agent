@@ -108,7 +108,7 @@ public class VerifyRequestMiddleware implements Filter {
         try {
             body = CharStreams.toString(req.getReader());
         } catch (IOException e) {
-            Logger.getLogger().error("Could not decode body; %s", e);
+            Logger.getLogger().debug("Could not decode body; %s", e);
         }
 
         String cookie = Utils.cookieIdFromRequest(servletRequest, options);
@@ -121,8 +121,8 @@ public class VerifyRequestMiddleware implements Filter {
             cid = clientFP.getString("cid");
             fp = clientFP.getString("fp");
         } catch (JSONException e) {
-            Logger.getLogger().error("Could not decode json object; %s", e);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | UnsupportedEncodingException | BadPaddingException e) {
+            Logger.getLogger().debug("Could not decode json object; %s", e);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException | NumberFormatException e) {
             e.printStackTrace();
         }
 

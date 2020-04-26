@@ -13,7 +13,7 @@ public class Action {
     private long ttl;
     @JsonProperty("ts")
     private long ts;
-    @JsonProperty("value")
+    @JsonProperty("values")
     private List<String> values;
 
     public Action(String name, long ttl, long ts, List<String> values) {

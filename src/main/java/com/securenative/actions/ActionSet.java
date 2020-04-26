@@ -34,7 +34,7 @@ public class ActionSet {
             if (this.isValidIP(item)) {
                 this.ip.add(new ActionItem(item, timeout));
             } else {
-                Logger.getLogger().warn(String.format("Not a valid ip range! %s", item));
+                Logger.getLogger().debug(String.format("Not a valid ip range! %s", item));
             }
         } else if (type.equals(SetType.USER.name())) {
             this.user.add(new ActionItem(item, timeout));

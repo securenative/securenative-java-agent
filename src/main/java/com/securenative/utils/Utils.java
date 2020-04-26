@@ -79,8 +79,8 @@ public class Utils {
     }
 
     public static String decrypt(String s, String key)
-            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, UnsupportedEncodingException,
-            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
+            IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
         Logger.getLogger().debug("Starting to decrypt " + s);
         if (s == null || s.length() == 0) {
             return s;
@@ -95,7 +95,7 @@ public class Utils {
         return new String(cipher.doFinal(cipherText), StandardCharsets.UTF_8).trim();
     }
 
-    private static byte[] hexToByteArray(String s) {
+    private static byte[] hexToByteArray(String s) throws NumberFormatException {
         byte[] retValue = null;
         if (s != null && s.length() != 0) {
             retValue = new byte[s.length() / 2];

@@ -34,8 +34,12 @@ public class SDKEvent implements Event {
     private Map<String, String> params;
 
     public SDKEvent(ServletRequest request, EventOptions eventOptions, SecureNativeOptions snOptions) {
-        this.eventType = EventTypes.SDK.getType();
         Logger.getLogger().debug("Building new SDK event");
+        if (eventOptions.getEventType() != null) {
+            this.eventType = eventOptions.getEventType();
+        } else {
+            this.eventType = EventTypes.SDK.getType();
+        }
 
         String cookie = "{}";
         if (!Utils.cookieIdFromRequest(request, snOptions).equals("")) {
@@ -49,8 +53,8 @@ public class SDKEvent implements Event {
         try {
             cookieDecoded = Utils.decrypt(cookie, snOptions.getApiKey());
             Logger.getLogger().debug(String.format("Cookie decoded; %s", cookieDecoded));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
-            Logger.getLogger().error("Could not decode cookie; %s", e);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | NumberFormatException e) {
+            Logger.getLogger().debug("Could not decode cookie; %s", e);
         }
 
         try {
@@ -59,24 +63,26 @@ public class SDKEvent implements Event {
             this.cid = clientFP.getString("cid");
             this.fp = clientFP.getString("fp");
         } catch (JSONException e) {
-            Logger.getLogger().error("Could not decode json object; %s", e);
+            Logger.getLogger().debug("Could not decode json object; %s", e);
+            this.cid = "";
+            this.fp = "";
         }
 
         if (eventOptions.getIp() != null && !eventOptions.getIp().equals("")) {
             this.ip = eventOptions.getIp();
-        } else {
+        } else if (request != null) {
             this.ip = Utils.clientIpFromRequest(request);
         }
 
         if (eventOptions.getRemoteIp() != null && !eventOptions.getRemoteIp().equals("")) {
             this.remoteIp = eventOptions.getRemoteIp();
-        } else {
+        } else if (request != null) {
             this.remoteIp = Utils.remoteIpFromRequest(request);
         }
 
         if (eventOptions.getUserAgent() != null && !eventOptions.getUserAgent().equals("")) {
             this.userAgent = eventOptions.getUserAgent();
-        } else {
+        } else if (request != null) {
             this.userAgent = Utils.userAgentFromRequest(request);
         }
 

@@ -1,11 +1,11 @@
 package com.securenative;
 
 import com.securenative.configurations.ConfigurationManager;
-import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.configurations.SecureNativeOptions;
+import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.module.ModuleManager;
-import com.securenative.snpackage.PackageManager;
 import com.securenative.snpackage.PackageItem;
+import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
