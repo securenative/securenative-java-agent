@@ -87,8 +87,14 @@ public class ActionSet {
         if (type.equals(SetType.IP.name())) {
             for (ActionItem actionItem : this.ip) {
                 if (actionItem.getItem().contains("/")) {
-                    return subnetContains(ai.getItem(), actionItem.getItem()) &&
-                            actionItem.getTimeout().equals(timeout);
+                    boolean sameIp = subnetContains(ai.getItem(), actionItem.getItem());
+                    boolean sameTimeout;
+                    if (timeout != null) {
+                        sameTimeout = actionItem.getTimeout().equals(timeout);
+                    } else {
+                        sameTimeout = true;
+                    }
+                    return sameIp && sameTimeout;
                 } else {
                     if (actionItem.equals(ai)) {
                         return true;

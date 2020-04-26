@@ -2,12 +2,20 @@ package com.securenative;
 
 import com.securenative.actions.ActionSet;
 import com.securenative.models.SetType;
+import com.securenative.utils.Logger;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
 
 public class ActionSetTest {
+    @BeforeClass
+    public static void setup() {
+        Logger.initLogger();
+        Logger.configureLogger();
+    }
+
     @Test
     public void blockUserIpCountryForever() {
         String ip = "10.0.0.1";
@@ -36,6 +44,10 @@ public class ActionSetTest {
         actionSet.add(SetType.USER.name(), user, timeout);
         actionSet.add(SetType.COUNTRY.name(), country, timeout);
 
+        Assert.assertTrue(actionSet.has(SetType.IP.name(), ip, timeout));
+        Assert.assertTrue(actionSet.has(SetType.USER.name(), user, timeout));
+        Assert.assertTrue(actionSet.has(SetType.COUNTRY.name(), country, timeout));
+
         try {
             TimeUnit.SECONDS.sleep(timeout+1);
         } catch (InterruptedException e) {
@@ -45,7 +57,6 @@ public class ActionSetTest {
         Assert.assertFalse(actionSet.has(SetType.IP.name(), ip, timeout));
         Assert.assertFalse(actionSet.has(SetType.USER.name(), user, timeout));
         Assert.assertFalse(actionSet.has(SetType.COUNTRY.name(), country, timeout));
-
     }
 
     @Test

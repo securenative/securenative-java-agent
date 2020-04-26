@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -81,7 +80,6 @@ public class Utils {
     public static String decrypt(String s, String key)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException, NumberFormatException {
-        Logger.getLogger().debug("Starting to decrypt " + s);
         if (s == null || s.length() == 0) {
             return s;
         }

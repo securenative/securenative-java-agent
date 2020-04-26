@@ -2,10 +2,18 @@ package com.securenative;
 
 import com.securenative.configurations.ConfigurationManager;
 import com.securenative.configurations.SecureNativeOptions;
+import com.securenative.utils.Logger;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ConfigurationManagerTest {
+    @BeforeClass
+    public static void setup() {
+        Logger.initLogger();
+        Logger.configureLogger();
+    }
+
     @Test
     public void getConfiguration() {
         ConfigurationManager configurationManager = new ConfigurationManager("securenative-test.json");
