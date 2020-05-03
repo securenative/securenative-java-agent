@@ -29,14 +29,9 @@ SecureNative monitors and protects applications from common security threats suc
 * Adaptive Authentication, prevent ATO (Account Takeover)
 
 ## Installation
-Please create free account at [register](https://console.securenative.com/register) to get api key.
+Create free account at [register](https://console.securenative.com/register) to get api key.
 
-Install SecureNative agent:
-
-```bash
-TBD
-```
-
+Create a basic setting file inside your project's folder:  
 ```shell script
 cat > securenative.json <<EOF
 {
@@ -44,6 +39,13 @@ cat > securenative.json <<EOF
   "SECURENATIVE_API_KEY": "YOUR_API_KEY"
 }
 EOF
+```
+
+## Run SecureNative agent:
+
+[Download](https://github.com/securenative/securenative-java-agent/packages) the latest java agent jar file. Run your java program with the following jvm command:
+```bash
+`java -javaagent:/path/to/securenative-agent-with-dependencies.jar -jar /path/to/application.jar`
 ```
 
 ## Configuration
