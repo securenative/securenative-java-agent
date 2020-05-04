@@ -4,21 +4,13 @@ import com.securenative.rules.Rule;
 import com.securenative.rules.RuleData;
 import com.securenative.rules.RuleInterception;
 import com.securenative.rules.RuleManager;
-import com.securenative.utils.Logger;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RuleManagerTest {
-    @BeforeClass
-    public static void setup() {
-        Logger.initLogger();
-        Logger.configureLogger();
-    }
-
     @Test
     public void registerRules() {
         RuleManager ruleManager = new RuleManager();

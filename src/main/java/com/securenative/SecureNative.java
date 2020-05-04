@@ -36,14 +36,16 @@ public class SecureNative {
     private ExecuteManager configurationUpdater;
     private final ModuleManager moduleManager;
 
+    public static final Logger logger = Logger.getLogger(SecureNative.class);
+
     public SecureNative(ModuleManager moduleManager, SecureNativeOptions snOptions) throws SecureNativeSDKException {
+        this.mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.snOptions = snOptions;
         this.apiKey = snOptions.getApiKey();
         this.eventManager = new EventManager(this.apiKey, this.snOptions);
         this.moduleManager = moduleManager;
         this.snOptions = snOptions;
         this.ruleManager = new RuleManager();
-        this.mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         if (!this.snOptions.isAgentDisable()) {
             // apply interceptors
@@ -52,7 +54,7 @@ public class SecureNative {
     }
 
     private void handleConfigUpdate(AgentConfigOptions config) {
-        Logger.getLogger().debug("Handling configuration update");
+        logger.debug("Handling configuration update");
 
         if (config == null) {
             return;
@@ -74,14 +76,14 @@ public class SecureNative {
     }
 
     public void error(Error err) {
-        Logger.getLogger().debug("Error", err);
+        logger.debug("Error", err);
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.ERROR.getRoute());
         Event event = EventFactory.createEvent(EventTypes.ERROR, err.toString());
         this.eventManager.sendAsync(event, requestUrl);
     }
 
     public String agentLogin() throws Exception {
-        Logger.getLogger().debug("Performing agent login");
+        logger.debug("Performing agent login");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.LOGIN.getRoute());
 
         String framework = this.moduleManager.getFramework();
@@ -95,16 +97,16 @@ public class SecureNative {
         this.handleConfigUpdate(res.getConfig());
 
         if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
-            Logger.getLogger().debug("Failed to perform agent login: Invalid api key id");
+            logger.debug("Failed to perform agent login: Invalid api key id");
             return null;
         }
 
-        Logger.getLogger().debug(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
+        logger.debug(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
         return res.getSessionId();
     }
 
     public Boolean agentLogout() {
-        Logger.getLogger().debug("Performing agent logout");
+        logger.debug("Performing agent logout");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.LOGOUT.getRoute());
 
         Event event = EventFactory.createEvent(EventTypes.AGENT_LOG_OUT);
@@ -112,24 +114,24 @@ public class SecureNative {
             this.eventManager.sendAgentEvent(event, requestUrl);
             this.heartbeat.shutdown();
             this.configurationUpdater.shutdown();
-            Logger.getLogger().debug("Agent successfully logged-out");
+            logger.debug("Agent successfully logged-out");
             return true;
         } catch (Exception e) {
-            Logger.getLogger().debug(String.join("Failed to perform agent logout; ", e.toString()));
+            logger.debug(String.join("Failed to perform agent logout; ", e.toString()));
         }
         return false;
     }
 
     public void startAgent() {
         if (!this.isAgentStarted) {
-            Logger.getLogger().debug("Attempting to start agent");
+            logger.debug("Attempting to start agent");
             if (this.snOptions.getApiKey() == null) {
-                Logger.getLogger().error("You must pass your SecureNative api key");
+                logger.error("You must pass your SecureNative api key");
                 return;
             }
 
             if (this.snOptions.isAgentDisable()) {
-                Logger.getLogger().debug("Skipping agent start");
+                logger.debug("Skipping agent start");
                 return;
             }
 
@@ -145,28 +147,28 @@ public class SecureNative {
                 this.isAgentStarted = true;
 
                 // Start heartbeat manager
-                Logger.getLogger().debug("Starting heartbeat manager");
+                logger.debug("Starting heartbeat manager");
                 this.heartbeat = new ExecuteManager(this.snOptions.getHeartbeatDelay(), this.snOptions.getHeartbeatPeriod(), "heartbeat event", this.heartbeatTask());
                 heartbeat.execute();
 
                 // Start configuration updater
-                Logger.getLogger().debug("Starting configuration update manager");
+                logger.debug("Starting configuration update manager");
                 this.configurationUpdater = new ExecuteManager(this.snOptions.getConfigUpdateDelay(), this.snOptions.getConfigUpdatePeriod(), "configuration update event", this.configUpdaterTask());
                 configurationUpdater.execute();
 
-                Logger.getLogger().debug("Agent successfully started!");
+                logger.debug("Agent successfully started!");
             } else {
-                Logger.getLogger().debug("No session obtained, unable to start agent!");
+                logger.debug("No session obtained, unable to start agent!");
                 this.isAgentStarted = false;
             }
         } else {
-            Logger.getLogger().debug("Agent already started, skipping");
+            logger.debug("Agent already started, skipping");
         }
     }
 
     public void stopAgent() {
         if (this.isAgentStarted) {
-            Logger.getLogger().debug("Attempting to stop agent");
+            logger.debug("Attempting to stop agent");
             this.eventManager.flush();
             Boolean status = this.agentLogout();
             if (status) {
@@ -197,29 +199,8 @@ public class SecureNative {
     }
 
     public RiskResult risk(Event event) {
-        Logger.getLogger().debug("Risk call");
+        logger.debug("Risk call");
         String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.RISK.getRoute());
-        return this.eventManager.sendSync(event, requestUrl);
-    }
-
-    // SDK event
-    public void track(Event event) {
-        Logger.getLogger().debug("Track event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.TRACK.getRoute());
-        this.eventManager.sendAsync(event, requestUrl);
-    }
-
-    // SDK event
-    public RiskResult verify(Event event) {
-        Logger.getLogger().debug("Verify event call");
-        String requestUrl = String.format("%s/%s", this.snOptions.getApiUrl(), ApiRoute.VERIFY.getRoute());
-        return this.eventManager.sendSync(event, requestUrl);
-    }
-
-    // SDK event
-    public RiskResult flow(long flowId, Event event) {
-        Logger.getLogger().debug("Flow event call");
-        String requestUrl = String.format("%s/%s/%s", this.snOptions.getApiUrl(), ApiRoute.FLOW.getRoute(), flowId);
         return this.eventManager.sendSync(event, requestUrl);
     }
 }

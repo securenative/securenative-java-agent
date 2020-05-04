@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 public class ConfigurationManager {
     static SecureNativeOptions config;
     static String CONFIG_FILE = "securenative.json";
+    static final Logger logger = Logger.getLogger(ConfigurationManager.class);
 
     // For test purposes
     public ConfigurationManager(String configFile) {
@@ -169,7 +170,7 @@ public class ConfigurationManager {
     }
 
     public static SecureNativeOptions readConfigFile() {
-        Logger.getLogger().debug(String.format("Reading %s", CONFIG_FILE));
+        logger.debug(String.format("Reading %s", CONFIG_FILE));
 
         String configPath = System.getProperty("user.dir") + "/" + CONFIG_FILE;
         Path path = Paths.get(configPath);
@@ -179,7 +180,7 @@ public class ConfigurationManager {
             try {
                 content = new String(Files.readAllBytes(path));
             } catch (IOException e) {
-                Logger.getLogger().debug(String.format("Unable to parse %s", CONFIG_FILE));
+                logger.debug(String.format("Unable to parse %s", CONFIG_FILE));
                 return null;
             }
 
@@ -188,7 +189,7 @@ public class ConfigurationManager {
             try {
                 conf = mapper.readValue(content, SecureNativeOptions.class);
             } catch (IOException e) {
-                Logger.getLogger().debug(String.format("Unable to parse %s", CONFIG_FILE));
+                logger.debug(String.format("Unable to parse %s", CONFIG_FILE));
                 return null;
             }
             return conf;

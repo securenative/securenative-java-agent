@@ -1,8 +1,9 @@
 package com.securenative.actions;
 
 import com.google.common.net.InetAddresses;
-import com.securenative.utils.Scheduler;
+import com.securenative.SecureNative;
 import com.securenative.utils.Logger;
+import com.securenative.utils.Scheduler;
 import com.securenative.models.ActionItem;
 import com.securenative.models.SetType;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +18,7 @@ public class ActionSet {
     private Set<ActionItem> ip;
     private Set<ActionItem> user;
     private Set<ActionItem> country;
+    private static final Logger logger = Logger.getLogger(ActionSet.class);
 
     public ActionSet(String name) {
         this.name = name;
@@ -34,7 +36,7 @@ public class ActionSet {
             if (this.isValidIP(item)) {
                 this.ip.add(new ActionItem(item, timeout));
             } else {
-                Logger.getLogger().debug(String.format("Not a valid ip range! %s", item));
+                logger.debug(String.format("Not a valid ip range! %s", item));
             }
         } else if (type.equals(SetType.USER.name())) {
             this.user.add(new ActionItem(item, timeout));

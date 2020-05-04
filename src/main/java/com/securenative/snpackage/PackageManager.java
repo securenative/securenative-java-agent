@@ -1,7 +1,7 @@
 package com.securenative.snpackage;
 
-import com.securenative.utils.Logger;
 import com.securenative.models.Dependency;
+import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class PackageManager {
+    private static final Logger logger = Logger.getLogger(PackageManager.class);
     private static Document readPackageFile(String filePath) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document document = null;
@@ -26,7 +27,7 @@ public class PackageManager {
             document = builder.parse(new File(filePath));
             document.getDocumentElement().normalize();
         } catch (ParserConfigurationException | IOException | SAXException e) {
-            Logger.getLogger().debug(String.join("Could not parse pom file; ", e.toString()));
+            logger.debug(String.join("Could not parse pom file; ", e.toString()));
         }
 
         return document;

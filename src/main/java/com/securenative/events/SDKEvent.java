@@ -1,10 +1,10 @@
 package com.securenative.events;
 
-import com.securenative.utils.Logger;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.models.EventOptions;
 import com.securenative.models.EventTypes;
 import com.securenative.models.User;
+import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,6 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.servlet.ServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SDKEvent implements Event {
+    private static final Logger logger = Logger.getLogger(SDKEvent.class);
     private final String eventType;
     private String cid;
     private String vid;
@@ -34,7 +34,7 @@ public class SDKEvent implements Event {
     private Map<String, String> params;
 
     public SDKEvent(ServletRequest request, EventOptions eventOptions, SecureNativeOptions snOptions) {
-        Logger.getLogger().debug("Building new SDK event");
+        logger.debug("Building new SDK event");
         if (eventOptions.getEventType() != null) {
             this.eventType = eventOptions.getEventType();
         } else {
@@ -47,23 +47,23 @@ public class SDKEvent implements Event {
         } else if (!Utils.secureHeaderFromRequest(request).equals("")) {
             cookie = Utils.secureHeaderFromRequest(request);
         }
-        Logger.getLogger().debug(String.format("Cookie from request; %s", cookie));
+        logger.debug(String.format("Cookie from request; %s", cookie));
 
         String cookieDecoded = "{}";
         try {
             cookieDecoded = Utils.decrypt(cookie, snOptions.getApiKey());
-            Logger.getLogger().debug(String.format("Cookie decoded; %s", cookieDecoded));
+            logger.debug(String.format("Cookie decoded; %s", cookieDecoded));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | NumberFormatException e) {
-            Logger.getLogger().debug("Could not decode cookie; %s", e);
+            logger.debug("Could not decode cookie; %s", e);
         }
 
         try {
             JSONObject clientFP = new JSONObject(cookieDecoded);
-            Logger.getLogger().debug(String.format("Extracted user FP; %s", clientFP));
+            logger.debug(String.format("Extracted user FP; %s", clientFP));
             this.cid = clientFP.getString("cid");
             this.fp = clientFP.getString("fp");
         } catch (JSONException e) {
-            Logger.getLogger().debug("Could not decode json object; %s", e);
+            logger.debug("Could not decode json object; %s", e);
             this.cid = "";
             this.fp = "";
         }

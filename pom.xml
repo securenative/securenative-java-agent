@@ -19,8 +19,8 @@
     </licenses>
     <developers>
         <developer>
-            <name>Inbal Tako</name>
-            <email>inbal@securenative.com</email>
+            <name>SecureNative Dev Team</name>
+            <email>info@securenative.com</email>
             <organization>securenative</organization>
             <organizationUrl>http://www.securenative.com</organizationUrl>
         </developer>
@@ -245,12 +245,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.28</version>
+            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.28</version>
+            <version>1.7.5</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

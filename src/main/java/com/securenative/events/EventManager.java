@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 
 public class EventManager implements IEventManager {
+    private static final Logger logger = Logger.getLogger(EventManager.class);
     private final String USER_AGENT_VALUE = "com.securenative.snlogic.SecureNative-java";
     private final String SN_VERSION = "SN-Version";
     private BoundRequestBuilder asyncClient;
@@ -48,7 +49,7 @@ public class EventManager implements IEventManager {
 
         if (this.options.getSdkEnabled() != null && !this.options.getSdkEnabled()) {
             executor = Executors.newSingleThreadScheduledExecutor();
-            Logger.getLogger().debug("Starting thread listening to messages queue");
+            logger.debug("Starting thread listening to messages queue");
             executor.execute(() -> {
                 try {
                     Thread.sleep((long) (Math.random() * 1000));
@@ -57,7 +58,7 @@ public class EventManager implements IEventManager {
                         sendSync(msg.getEvent(), msg.getUrl());
                     }
                 } catch (InterruptedException e) {
-                    Logger.getLogger().debug("Stopping event manager", e);
+                    logger.debug("Stopping event manager", e);
                 }
             });
         }
@@ -77,18 +78,18 @@ public class EventManager implements IEventManager {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
             Response response = this.asyncClient.execute().get();
             if (response == null || response.getStatusCode() > HTTP_STATUS_OK) {
-                Logger.getLogger().debug(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
+                logger.debug(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
                 events.add(new Message(event, response.getUri().toUrl()));
             }
             String responseBody = response.getResponseBody();
             if (Utils.isNullOrEmpty(responseBody)) {
-                Logger.getLogger().debug(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", url));
+                logger.debug(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", url));
                 return defaultRiskResult;
             }
-            Logger.getLogger().debug(String.format("SecureNative http call to %s was successful.", url));
+            logger.debug(String.format("SecureNative http call to %s was successful.", url));
             return mapper.readValue(responseBody, RiskResult.class);
         } catch (InterruptedException | ExecutionException | IOException e) {
-            Logger.getLogger().debug(String.format("Failed to send event; %s", e));
+            logger.debug(String.format("Failed to send event; %s", e));
         }
         return defaultRiskResult;
     }
@@ -102,7 +103,7 @@ public class EventManager implements IEventManager {
         try {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
         } catch (JsonProcessingException e) {
-            Logger.getLogger().debug(String.format("SecureNative async http call failed to end point: %s with event type %s. error: %s", url, event.getEventType(), e));
+            logger.debug(String.format("SecureNative async http call failed to end point: %s with event type %s. error: %s", url, event.getEventType(), e));
         }
 
         this.asyncClient.execute(
@@ -110,7 +111,7 @@ public class EventManager implements IEventManager {
                     @Override
                     public Object onCompleted(Response response) {
                         if (response.getStatusCode() > HTTP_STATUS_OK) {
-                            Logger.getLogger().debug(String.format("SecureNative http call failed to end point: %s with event type %s. adding back to queue.", url, event.getEventType()));
+                            logger.debug(String.format("SecureNative http call failed to end point: %s with event type %s. adding back to queue.", url, event.getEventType()));
                             events.add(new Message(event, response.getUri().toUrl()));
                         }
                         return response;
@@ -125,19 +126,19 @@ public class EventManager implements IEventManager {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
             Response response = this.asyncClient.execute().get();
             if (response == null || response.getStatusCode() > HTTP_STATUS_OK) {
-                Logger.getLogger().debug(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", requestUrl, event.getEventType()));
+                logger.debug(String.format("SecureNative http call failed to end point: %s  with event type %s. adding back to queue.", requestUrl, event.getEventType()));
                 assert response != null;
                 events.add(new Message(event, response.getUri().toUrl()));
             }
             String responseBody = response.getResponseBody();
             if (Utils.isNullOrEmpty(responseBody)) {
-                Logger.getLogger().debug(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", requestUrl));
+                logger.debug(String.format("SecureNative http call to %s returned with empty response. returning default risk result.", requestUrl));
                 return "";
             }
-            Logger.getLogger().debug(String.format("SecureNative http call to %s was successful.", requestUrl));
+            logger.debug(String.format("SecureNative http call to %s was successful.", requestUrl));
             return responseBody;
         } catch (InterruptedException | ExecutionException | IOException e) {
-            Logger.getLogger().debug(String.format("Failed to send event; %s", e));
+            logger.debug(String.format("Failed to send event; %s", e));
         }
         return "";
     }
@@ -147,7 +148,7 @@ public class EventManager implements IEventManager {
         try {
             this.asyncClient.setBody(mapper.writeValueAsString(event));
         } catch (JsonProcessingException e) {
-            Logger.getLogger().debug(String.format("SecureNative async http call failed to end point: %s with event type %s. error: %s", requestUrl, event.getEventType(), e));
+            logger.debug(String.format("SecureNative async http call failed to end point: %s with event type %s. error: %s", requestUrl, event.getEventType(), e));
         }
 
         this.asyncClient.execute(
@@ -155,14 +156,14 @@ public class EventManager implements IEventManager {
                     @Override
                     public Object onCompleted(Response response) {
                         if (response.getStatusCode() > HTTP_STATUS_OK) {
-                            Logger.getLogger().debug("Failed to get configuration update, will try again");
+                            logger.debug("Failed to get configuration update, will try again");
                             return null;
                         }
-                        Logger.getLogger().debug(String.format("SecureNative http call to %s was successful.", requestUrl));
+                        logger.debug(String.format("SecureNative http call to %s was successful.", requestUrl));
                         try {
                             return mapper.readValue(response.getResponseBody(), AgentConfigOptions.class);
                         } catch (JsonProcessingException e) {
-                            Logger.getLogger().debug(String.format("Failed to decode configuration update response; %s", e));
+                            logger.debug(String.format("Failed to decode configuration update response; %s", e));
                         }
                         return null;
                     }
@@ -175,7 +176,7 @@ public class EventManager implements IEventManager {
                 .setConnectTimeout((int) options.getTimeout())
                 .setUserAgent(USER_AGENT_VALUE);
         AsyncHttpClient client = Dsl.asyncHttpClient(clientBuilder);
-        Logger.getLogger().debug("Initialized Http client");
+        logger.debug("Initialized Http client");
         return client.preparePost(options.getApiUrl())
                 .addHeader(SN_VERSION, this.getVersion()).addHeader("Accept", "application/json");
 
@@ -193,7 +194,7 @@ public class EventManager implements IEventManager {
     }
 
     public void flush() {
-        Logger.getLogger().debug("Flushing event queue");
+        logger.debug("Flushing event queue");
         for (Message message : this.events) {
             this.sendSync(message.getEvent(), message.getUrl());
         }

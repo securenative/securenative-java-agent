@@ -1,11 +1,12 @@
 package com.securenative.processors;
 
-import com.securenative.utils.Logger;
 import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
 import com.securenative.models.SetType;
+import com.securenative.utils.Logger;
 
 public class WhitelistIp extends Processor {
+    private static final Logger logger = Logger.getLogger(WhitelistIp.class);
     private Action action;
 
     public WhitelistIp(Action action) {
@@ -16,7 +17,7 @@ public class WhitelistIp extends Processor {
     public void apply() {
         if (this.action.getValues() != null) {
             this.action.getValues().forEach(value -> {
-                Logger.getLogger().debug(String.format("Whitelisting ip: %s", value));
+                logger.debug(String.format("Whitelisting ip: %s", value));
                 ActionList.whitelist.add(SetType.IP.toString(), value, this.action.getTtl());
             });
         }

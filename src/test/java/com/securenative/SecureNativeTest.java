@@ -4,21 +4,13 @@ import com.securenative.configurations.ConfigurationManager;
 import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.module.ModuleManager;
-import com.securenative.snpackage.PackageManager;
 import com.securenative.snpackage.PackageItem;
-import com.securenative.utils.Logger;
+import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.Utils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SecureNativeTest {
-    @BeforeClass
-    public static void setup() {
-        Logger.initLogger();
-        Logger.configureLogger();
-    }
-
     @Test(expected = SecureNativeSDKException.class)
     public void invalidInitialization() throws SecureNativeSDKException {
         SecureNativeOptions config = ConfigurationManager.getConfig();

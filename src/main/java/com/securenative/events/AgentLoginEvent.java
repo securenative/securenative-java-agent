@@ -2,17 +2,18 @@ package com.securenative.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.models.EventTypes;
+import com.securenative.snpackage.PackageItem;
+import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import javafx.util.Pair;
-import com.securenative.snpackage.PackageManager;
-import com.securenative.snpackage.PackageItem;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
+    private static final Logger logger = Logger.getLogger(AgentLoginEvent.class);
 
     @JsonProperty("eventType")
     private final String eventType;
@@ -61,7 +62,7 @@ public class AgentLoginEvent implements Event {
             hostId = InetAddress.getLocalHost().getHostAddress();
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            Logger.getLogger().debug(String.join("Could not find hostname and/or host address; ", e.toString()));
+            logger.debug(String.join("Could not find hostname and/or host address; ", e.toString()));
         }
         this.os = new Os(hostId, hostname, System.getProperty("os.arch"), System.getProperty("os.name"), Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().totalMemory());
 

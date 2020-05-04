@@ -1,33 +1,89 @@
 package com.securenative.utils;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.asynchttpclient.netty.channel.DefaultChannelPool;
-import org.asynchttpclient.netty.handler.HttpHandler;
-import io.netty.util.internal.PlatformDependent;
-import io.netty.util.ResourceLeakDetector;
 import org.slf4j.LoggerFactory;
 
-public class Logger {
-    private static org.slf4j.Logger logger;
+enum LogLevel {
+    TRACE("trace"),
+    DEBUG("debug"),
+    INFO("info"),
+    WARN("warn"),
+    ERROR("error");
 
-    public static org.slf4j.Logger getLogger() {
-        return logger;
+
+    private final String text;
+
+    LogLevel(final String text) {
+        this.text = text;
     }
 
-    public static void initLogger() {
-        if (logger == null) {
-            logger = LoggerFactory.getLogger(Logger.class);
-            org.apache.log4j.Logger.getRootLogger().setLevel(Level.ERROR);
+    @Override
+    public String toString() {
+        return text;
+    }
+}
+
+interface ILogger {
+    void trace(String var1, Object... var2);
+    void debug(String var1, Object... var2);
+    void info(String var1, Object... var2);
+    void warn(String var1, Object... var2);
+    void error(String var1, Object... var2);
+}
+
+public class Logger implements ILogger {
+    private static LogLevel _logLevel = LogLevel.ERROR;
+    private org.slf4j.Logger _logger = null;
+
+    private Logger(Class<?> clazz){
+        this._logger = LoggerFactory.getLogger(clazz);
+    }
+
+    static void initLogger(String logLevel) {
+        try{
+            _logLevel = LogLevel.valueOf(logLevel);
+        }catch (IllegalArgumentException ex){
+            _logLevel = LogLevel.ERROR;
         }
     }
 
-    public static void configureLogger() {
-        BasicConfigurator.configure();
-        org.apache.log4j.Logger.getRootLogger().setLevel(Level.DEBUG);
-        org.apache.log4j.Logger.getLogger(DefaultChannelPool.class).setLevel(Level.WARN);
-        org.apache.log4j.Logger.getLogger(HttpHandler.class).setLevel(Level.WARN);
-        org.apache.log4j.Logger.getLogger(PlatformDependent.class).setLevel(Level.WARN);
-        org.apache.log4j.Logger.getLogger(ResourceLeakDetector.class).setLevel(Level.WARN);
+    public static Logger getLogger(Class<?> clazz) {
+        return new Logger(clazz);
+    }
+
+    @Override
+    public void trace(String var1, Object... var2) {
+        if(_logLevel == LogLevel.TRACE){
+            _logger.error(var1, var2);
+        }
+    }
+
+    @Override
+    public void debug(String var1, Object... var2) {
+        if(_logLevel == LogLevel.DEBUG){
+            _logger.debug(var1, var2);
+        }
+    }
+
+    @Override
+    public void info(String var1, Object... var2) {
+        if(_logLevel == LogLevel.INFO){
+            _logger.error(var1, var2);
+        }
+    }
+
+    @Override
+    public void warn(String var1, Object... var2) {
+        if(_logLevel == LogLevel.WARN){
+            _logger.warn(var1, var2);
+        }
+    }
+
+    @Override
+    public void error(String var1, Object... var2) {
+        if(_logLevel == LogLevel.ERROR){
+            _logger.error(var1, var2);
+        }
     }
 }
+
+

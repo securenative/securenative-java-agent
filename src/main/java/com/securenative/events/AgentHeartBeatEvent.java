@@ -1,15 +1,16 @@
 package com.securenative.events;
 
-import com.securenative.utils.Logger;
 import com.securenative.models.EventTypes;
-import com.securenative.snpackage.PackageManager;
 import com.securenative.snpackage.PackageItem;
+import com.securenative.snpackage.PackageManager;
+import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class AgentHeartBeatEvent implements Event {
+    private static final Logger logger = Logger.getLogger(AgentHeartBeatEvent.class);
     private static final String PACKAGE_FILE_NAME = "/pom.xml";
     private final String eventType;
     private String runtime;
@@ -26,7 +27,7 @@ public class AgentHeartBeatEvent implements Event {
             this.hostname = InetAddress.getLocalHost().getHostName();
             this.hostId = Utils.calculateHash(InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            Logger.getLogger().debug("Could not find host name; ", e);
+            logger.debug("Could not find host name; ", e);
         }
         this.agentVersion = AgentHeartBeatEvent.agentPackage.getVersion();
         this.runtime = "java";

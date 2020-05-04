@@ -1,7 +1,7 @@
 package com.securenative.middleware;
 
-import com.securenative.utils.Logger;
 import com.securenative.SecureNative;
+import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
 import javax.servlet.*;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class VerifyWebhookMiddleware implements Filter {
+    private static final Logger logger = Logger.getLogger(VerifyWebhookMiddleware.class);
     private SecureNative secureNative;
     private final String SIGNATURE_KEY = "x-securenative";
 
@@ -41,7 +42,7 @@ public class VerifyWebhookMiddleware implements Filter {
             filterChain.doFilter(req, res);
             return;
         }
-        Logger.getLogger().debug("Request have been blocked due to incompatible signature");
+        logger.debug("Request have been blocked due to incompatible signature");
         res.sendError(401, "Unauthorized");
         filterChain.doFilter(servletRequest, servletResponse);
     }
