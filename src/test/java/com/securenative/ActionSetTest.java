@@ -1,7 +1,7 @@
 package com.securenative;
 
 import com.securenative.actions.ActionSet;
-import com.securenative.models.SetType;
+import com.securenative.enums.SetType;
 import org.junit.Assert;
 import org.junit.Test;
 

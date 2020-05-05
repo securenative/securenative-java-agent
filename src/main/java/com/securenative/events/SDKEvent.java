@@ -1,96 +1,63 @@
 package com.securenative.events;
 
-import com.securenative.configurations.SecureNativeOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.securenative.SecureNative;
+import com.securenative.config.SecureNativeOptions;
+import com.securenative.context.SecureNativeContext;
+import com.securenative.context.SecureNativeContextBuilder;
+import com.securenative.models.ClientToken;
 import com.securenative.models.EventOptions;
-import com.securenative.models.EventTypes;
-import com.securenative.models.User;
+import com.securenative.models.RequestContext;
+import com.securenative.models.UserTraits;
+import com.securenative.utils.DateUtils;
+import com.securenative.utils.EncryptionUtils;
 import com.securenative.utils.Logger;
-import com.securenative.utils.Utils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.servlet.ServletRequest;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class SDKEvent implements Event {
-    private static final Logger logger = Logger.getLogger(SDKEvent.class);
-    private final String eventType;
-    private String cid;
-    private String vid;
-    private String fp;
-    private String ip;
-    private String remoteIp;
-    private String userAgent;
-    private User user;
-    private String timestamp;
-    private String device;
-    private Map<String, String> params;
+    private final String rid;
+    public String eventType;
+    public String userId;
+    private final UserTraits userTraits;
+    public RequestContext request;
+    public String timestamp;
+    public Map<Object, Object> properties;
+    public static final Logger logger = Logger.getLogger(SecureNative.class);
 
-    public SDKEvent(ServletRequest request, EventOptions eventOptions, SecureNativeOptions snOptions) {
-        logger.debug("Building new SDK event");
-        if (eventOptions.getEventType() != null) {
-            this.eventType = eventOptions.getEventType();
-        } else {
-            this.eventType = EventTypes.SDK.getType();
-        }
+    public SDKEvent(EventOptions event, SecureNativeOptions options) {
+        SecureNativeContext context = event.getContext() != null?  event.getContext() : SecureNativeContextBuilder.defaultContextBuilder().build();
 
-        String cookie = "{}";
-        if (!Utils.cookieIdFromRequest(request, snOptions).equals("")) {
-            cookie = Utils.cookieIdFromRequest(request, snOptions);
-        } else if (!Utils.secureHeaderFromRequest(request).equals("")) {
-            cookie = Utils.secureHeaderFromRequest(request);
-        }
-        logger.debug(String.format("Cookie from request; %s", cookie));
+        ClientToken clientToken = decryptToken(context.getClientToken(), options.getApiKey());
 
-        String cookieDecoded = "{}";
+        this.rid = UUID.randomUUID().toString();
+        this.eventType = event.getEvent();
+        this.userId = event.getUserId();
+        this.userTraits = event.getUserTraits();
+        this.request =  new RequestContext.RequestContextBuilder()
+                .withCid(clientToken.getCid())
+                .withVid(clientToken.getVid())
+                .withFp(clientToken.getFp())
+                .withIp(context.getIp())
+                .withRemoteIp(context.getRemoteIp())
+                .withMethod(context.getMethod())
+                .withUrl(context.getUrl())
+                .witHeaders(context.getHeaders())
+                .build();
+        this.timestamp = DateUtils.toTimestamp(event.getTimestamp());
+        this.properties = event.getProperties();
+    }
+
+    private ClientToken decryptToken(String token, String key) {
+        ObjectMapper mapper = new ObjectMapper();
         try {
-            cookieDecoded = Utils.decrypt(cookie, snOptions.getApiKey());
-            logger.debug(String.format("Cookie decoded; %s", cookieDecoded));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException | NumberFormatException e) {
-            logger.debug("Could not decode cookie; %s", e);
+            String decryptedClientToken = EncryptionUtils.decrypt(token, key);
+            return mapper.readValue(decryptedClientToken, ClientToken.class);
+        } catch (Exception ex) {
+            logger.error("Failed to decrypt token");
         }
 
-        try {
-            JSONObject clientFP = new JSONObject(cookieDecoded);
-            logger.debug(String.format("Extracted user FP; %s", clientFP));
-            this.cid = clientFP.getString("cid");
-            this.fp = clientFP.getString("fp");
-        } catch (JSONException e) {
-            logger.debug("Could not decode json object; %s", e);
-            this.cid = "";
-            this.fp = "";
-        }
-
-        if (eventOptions.getIp() != null && !eventOptions.getIp().equals("")) {
-            this.ip = eventOptions.getIp();
-        } else if (request != null) {
-            this.ip = Utils.clientIpFromRequest(request);
-        }
-
-        if (eventOptions.getRemoteIp() != null && !eventOptions.getRemoteIp().equals("")) {
-            this.remoteIp = eventOptions.getRemoteIp();
-        } else if (request != null) {
-            this.remoteIp = Utils.remoteIpFromRequest(request);
-        }
-
-        if (eventOptions.getUserAgent() != null && !eventOptions.getUserAgent().equals("")) {
-            this.userAgent = eventOptions.getUserAgent();
-        } else if (request != null) {
-            this.userAgent = Utils.userAgentFromRequest(request);
-        }
-
-        this.vid = UUID.randomUUID().toString();
-        this.user = eventOptions.getUser();
-        this.timestamp = Utils.generateTimestamp();
-        this.device = eventOptions.getDevice();
-        this.params = eventOptions.getParams();
+        return new ClientToken();
     }
 
     @Override
@@ -98,79 +65,27 @@ public class SDKEvent implements Event {
         return this.eventType;
     }
 
-    public String getCid() {
-        return cid;
+    public String getRid() {
+        return rid;
     }
 
-    public String getVid() {
-        return vid;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getFp() {
-        return fp;
+    public UserTraits getUserTraits() {
+        return userTraits;
     }
 
-    public String getIp() {
-        return ip;
-    }
-
-    public String getRemoteIp() {
-        return remoteIp;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public User getUser() {
-        return user;
+    public RequestContext getRequest() {
+        return request;
     }
 
     public String getTimestamp() {
         return timestamp;
     }
 
-    public String getDevice() {
-        return device;
-    }
-
-    public Map<String, String> getParams() {
-        return params;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public void setVid(String vid) {
-        this.vid = vid;
-    }
-
-    public void setFp(String fp) {
-        this.fp = fp;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public void setRemoteIp(String remoteIp) {
-        this.remoteIp = remoteIp;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setDevice(String device) {
-        this.device = device;
-    }
-
-    public void setParams(Map<String, String> params) {
-        this.params = params;
+    public Map<Object, Object> getProperties() {
+        return properties;
     }
 }

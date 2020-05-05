@@ -2,7 +2,7 @@ package com.securenative.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.securenative.configurations.AgentConfigOptions;
+import com.securenative.config.AgentConfigOptions;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AgentLoginResponse {

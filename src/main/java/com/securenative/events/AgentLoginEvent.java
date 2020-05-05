@@ -1,7 +1,7 @@
 package com.securenative.events;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.securenative.models.EventTypes;
+import com.securenative.enums.EventTypes;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.Logger;

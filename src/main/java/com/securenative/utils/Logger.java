@@ -38,7 +38,7 @@ public class Logger implements ILogger {
         this._logger = LoggerFactory.getLogger(clazz);
     }
 
-    static void initLogger(String logLevel) {
+    public static void initLogger(String logLevel) {
         try{
             _logLevel = LogLevel.valueOf(logLevel);
         }catch (IllegalArgumentException ex){

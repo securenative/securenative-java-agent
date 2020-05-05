@@ -1,51 +1,63 @@
 package com.securenative.models;
 
+import com.securenative.context.SecureNativeContext;
+
+import java.util.Date;
 import java.util.Map;
 
 public class EventOptions {
-    private String ip;
-    private String userAgent;
-    private String eventType;
-    private String remoteIp;
-    private  User user;
-    private String device;
-    private Map<String, String> params;
+    private String event;
+    private String userId;
+    private UserTraits userTraits;
+    private SecureNativeContext context;
+    private Map<Object, Object> properties;
+    private Date timestamp;
 
-    public EventOptions(String ip, String userAgent, String eventType, String remoteIp, User user, String device, Map<String, String> params) {
-        this.ip = ip;
-        this.userAgent = userAgent;
-        this.eventType = eventType;
-        this.remoteIp = remoteIp;
-        this.user = user;
-        this.device = device;
-        this.params = params;
+    public EventOptions(String event) {
+        this.event = event;
     }
 
-    public String getIp() {
-        return ip;
+    public String getEvent() {
+        return event;
     }
 
-    public String getUserAgent() {
-        return userAgent;
+    public void setEvent(String event) {
+        this.event = event;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String getUserId() {
+        return userId;
     }
 
-    public String getRemoteIp() {
-        return remoteIp;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public User getUser() {
-        return user;
+    public UserTraits getUserTraits() {
+        return userTraits;
     }
 
-    public String getDevice() {
-        return device;
+    public void setUserTraits(UserTraits userTraits) {
+        this.userTraits = userTraits;
     }
 
-    public Map<String, String> getParams() {
-        return params;
+    public SecureNativeContext getContext() {
+        return context;
     }
+
+    public void setContext(SecureNativeContext context) {
+        this.context = context;
+    }
+
+    public Map<Object, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<Object, Object> properties) {
+        this.properties = properties;
+    }
+
+    public Date getTimestamp() { return timestamp; }
+
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }

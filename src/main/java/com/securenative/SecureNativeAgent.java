@@ -1,14 +1,13 @@
 package com.securenative;
 
-import com.securenative.configurations.ConfigurationManager;
-import com.securenative.configurations.SecureNativeOptions;
+import com.securenative.config.ConfigurationManager;
+import com.securenative.config.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.module.ModuleManager;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
-import org.apache.log4j.BasicConfigurator;
 
 import java.lang.instrument.Instrumentation;
 
@@ -19,16 +18,14 @@ public class SecureNativeAgent {
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
-            SecureNativeOptions config = ConfigurationManager.getConfig();
+            SecureNativeOptions config = ConfigurationManager.loadConfig();
 
             // Set default app name
             config.setAppName(appPkg.getName());
 
             // Configure logger
-            final Logger logger = Logger.getLogger(SecureNativeAgent.class);
-            if (config.isLoggingEnabled()) {
-                BasicConfigurator.configure();
-            }
+            Logger.initLogger(config.getLogLevel().toLowerCase());
+            final Logger logger = Logger.getLogger(SecureNative.class);
             logger.debug(String.format("Loaded Configurations %s", config.toString()));
 
             // Get relevant module

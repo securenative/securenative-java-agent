@@ -1,6 +1,5 @@
 package com.securenative.utils;
 
-import com.securenative.configurations.SecureNativeOptions;
 import com.securenative.exceptions.SecureNativeSDKException;
 import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -8,30 +7,22 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.Scanner;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Formatter;
+import java.util.Scanner;
 
 public class Utils {
-    public static String COOKIE_NAME = "_sn";
     private static final String HMAC_SHA1_ALGORITHM = "HmacSHA512";
     private static final int AES_KEY_SIZE = 32;
-    private static final String[] ipHeaders = {"x-forwarded-for", "x-client-ip", "x-real-ip", "x-forwarded", "x-cluster-client-ip", "forwarded-for", "forwarded", "via"};
 
     private static String toHexString(byte[] bytes) {
         Formatter formatter = new Formatter();
@@ -166,87 +157,6 @@ public class Utils {
         }
     }
 
-    private static boolean isValidPublicIp(String ip) {
-        Inet4Address address;
-        try {
-            address = (Inet4Address) InetAddress.getByName(ip);
-        } catch (UnknownHostException exception) {
-            return false;
-        }
-        return !(address.isSiteLocalAddress() ||
-                address.isAnyLocalAddress() ||
-                address.isLinkLocalAddress() ||
-                address.isLoopbackAddress() ||
-                address.isMulticastAddress());
-    }
-
-    public static String cookieIdFromRequest(ServletRequest request, SecureNativeOptions options) {
-        if (request == null) {
-            return "";
-        }
-
-        String cookieName = COOKIE_NAME;
-        if (options.getCookieName() != null && !options.getCookieName().equals("")) {
-            cookieName = options.getCookieName();
-        }
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieName)) {
-                return cookie.getValue();
-            }
-        }
-        return "";
-    }
-
-    public static String secureHeaderFromRequest(ServletRequest request) {
-        if (request == null) {
-            return "";
-        }
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        String secHeader = req.getHeader("x-securenative");
-        if (secHeader != null) {
-            return secHeader;
-        }
-        return "";
-    }
-
-    public static String clientIpFromRequest(ServletRequest request) {
-        if (request == null) {
-            return "";
-        }
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        String bestCandidate = "";
-
-        for (String ipHeader : ipHeaders) {
-            if (req.getHeader(ipHeader) != null) {
-                String ip = req.getHeader(ipHeader);
-                if (isValidPublicIp(ip)) {
-                    bestCandidate = ip;
-                }
-            }
-        }
-
-        return bestCandidate;
-    }
-
-    public static String remoteIpFromRequest(ServletRequest request) {
-        HttpServletRequest req = (HttpServletRequest) request;
-        return req.getRemoteAddr();
-    }
-
-    public static String userAgentFromRequest(ServletRequest request) {
-        if (request == null) {
-            return "";
-        }
-
-        HttpServletRequest req = (HttpServletRequest) request;
-        return req.getHeader("user-agent");
-    }
-
     public static String calculateHash(String str) {
         return DigestUtils.sha256Hex(str);
     }
@@ -268,5 +178,41 @@ public class Utils {
 
     public static String generateTimestamp() {
         return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+    }
+
+    public static Integer parseIntegerOrDefault(String str, Integer defaultValue) {
+        try {
+            return Integer.valueOf(str);
+        }catch (NumberFormatException ex){
+            return defaultValue;
+        }
+    }
+
+    public static Boolean parseBooleanOrDefault(String str, Boolean defaultValue) {
+        try {
+            return Boolean.valueOf(str);
+        }catch (Exception ex){
+            return defaultValue;
+        }
+    }
+
+    public static Long parseLongOrDefault(String str, Long defaultValue) {
+        try {
+            return Long.valueOf(str);
+        }catch (Exception ex){
+            return defaultValue;
+        }
+    }
+
+    public static boolean timingSafeEqual(byte[] a, byte[] b) {
+        if (a.length != b.length) {
+            return false;
+        }
+
+        int result = 0;
+        for (int i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result == 0;
     }
 }

@@ -1,15 +1,18 @@
 package com.securenative.events;
 
-import com.securenative.models.EventTypes;
+import com.securenative.enums.EventTypes;
 import com.securenative.models.User;
+import com.securenative.utils.Utils;
 
 public class LoginFailureEvent implements Event{
     private final String eventType;
     private User user;
+    private final String timestamp;
 
     public LoginFailureEvent(User user) {
         this.user = user;
         this.eventType = EventTypes.LOG_IN_FAILURE.getType();
+        this.timestamp = Utils.generateTimestamp();
     }
 
     public User getUser() {
@@ -23,5 +26,10 @@ public class LoginFailureEvent implements Event{
     @Override
     public String getEventType() {
         return this.eventType;
+    }
+
+    @Override
+    public String getTimestamp() {
+        return this.timestamp;
     }
 }

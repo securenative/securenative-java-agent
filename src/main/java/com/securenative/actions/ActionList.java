@@ -1,6 +1,6 @@
 package com.securenative.actions;
 
-import com.securenative.models.ActionListType;
+import com.securenative.enums.ActionListType;
 
 public class ActionList {
     public static ActionSet whitelist = new ActionSet(ActionListType.WHITELIST.getType());

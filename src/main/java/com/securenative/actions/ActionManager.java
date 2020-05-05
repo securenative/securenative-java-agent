@@ -1,6 +1,6 @@
 package com.securenative.actions;
 
-import com.securenative.models.ProcessesType;
+import com.securenative.enums.ProcessesType;
 import com.securenative.processors.ProcessorsFactory;
 
 import java.util.HashMap;

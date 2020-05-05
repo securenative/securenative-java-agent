@@ -1,12 +1,10 @@
 package com.securenative.events;
 
-import com.securenative.configurations.SecureNativeOptions;
+import com.securenative.config.SecureNativeOptions;
+import com.securenative.enums.EventTypes;
 import com.securenative.models.EventOptions;
-import com.securenative.models.EventTypes;
 import com.securenative.models.RequestOptions;
 import com.securenative.models.User;
-
-import javax.servlet.ServletRequest;
 
 public class EventFactory {
     public static Event createEvent(EventTypes eventType, Object... args) {
@@ -22,19 +20,17 @@ public class EventFactory {
             String message = (String) args[1];
             return new ErrorEvent(stackTrace, message);
         } else if (eventType == EventTypes.CONFIG) {
-            String hostId = (String) args[0];
             String appName = (String) args[1];
-            return new ConfigEvent(hostId, appName);
+            return new ConfigEvent(appName);
         } else if (eventType == EventTypes.HEARTBEAT) {
             return new AgentHeartBeatEvent();
         } else if (eventType == EventTypes.REQUEST) {
             RequestOptions options = (RequestOptions) args[0];
             return new RequestEvent(options);
         } else if (eventType == EventTypes.SDK) {
-            ServletRequest request = (ServletRequest) args[0];
-            EventOptions eventOptions = (EventOptions) args[1];
+            EventOptions eventOptions = (EventOptions) args[0];
             SecureNativeOptions snOptions = (SecureNativeOptions) args[2];
-            return new SDKEvent(request, eventOptions, snOptions);
+            return new SDKEvent(eventOptions, snOptions);
         } else if (eventType == EventTypes.LOG_IN) {
             User user = (User) args[0];
             return new LoginEvent(user);

@@ -2,7 +2,7 @@ package com.securenative.processors;
 
 import com.securenative.actions.Action;
 import com.securenative.actions.ActionList;
-import com.securenative.models.SetType;
+import com.securenative.enums.SetType;
 import com.securenative.utils.Logger;
 
 public class WhitelistIp extends Processor {

@@ -1,6 +1,6 @@
 package com.securenative.events;
 
-import com.securenative.models.EventTypes;
+import com.securenative.enums.EventTypes;
 import com.securenative.utils.Utils;
 
 public class AgentLogoutEvent implements Event {
