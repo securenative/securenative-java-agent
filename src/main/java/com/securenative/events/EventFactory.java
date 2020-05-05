@@ -20,7 +20,7 @@ public class EventFactory {
             String message = (String) args[1];
             return new ErrorEvent(stackTrace, message);
         } else if (eventType == EventTypes.CONFIG) {
-            String appName = (String) args[1];
+            String appName = (String) args[0];
             return new ConfigEvent(appName);
         } else if (eventType == EventTypes.HEARTBEAT) {
             return new AgentHeartBeatEvent();

@@ -32,11 +32,8 @@ public class SecureNativeHTTPClient implements HttpClient {
     @Override
     public HttpResponse post(String path, String json) throws IOException {
         RequestBody body = RequestBody.create(json, JSON);
-
-        String url = String.format("%s/%s", this.options.getApiUrl(), path);
-
         Request request = new Request.Builder()
-                .url(url)
+                .url(path)
                 .post(body)
                 .build();
         try (Response response = this.client.newCall(request).execute()) {

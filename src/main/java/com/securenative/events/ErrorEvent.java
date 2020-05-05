@@ -1,7 +1,7 @@
 package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class ErrorEvent implements Event {
     private String message;
@@ -12,7 +12,7 @@ public class ErrorEvent implements Event {
 
     public ErrorEvent(String stackTrace, String message) {
         this.eventType = EventTypes.ERROR.getType();
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
         this.message = message;
         this.stackTrace = stackTrace;
     }

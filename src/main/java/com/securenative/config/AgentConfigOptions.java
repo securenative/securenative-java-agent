@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.actions.Action;
 import com.securenative.rules.Rule;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class AgentConfigOptions {
 
     // Empty constructor for deserialization
     public AgentConfigOptions() {
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     public List<Rule> getRules() {

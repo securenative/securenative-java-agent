@@ -80,7 +80,7 @@ public class SecureNativeConfigurationBuilder {
                 .withApiKey(null)
                 .withApiUrl("https://api.securenative.com/collector/api/v1")
                 .withInterval(1000)
-                .withTimeout(1500)
+                .withTimeout(2 * 60 * 1000)
                 .withMaxEvents(1000)
                 .withAutoSend(true)
                 .withDisable(false)

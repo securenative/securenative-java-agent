@@ -1,7 +1,7 @@
 package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class PerformanceEvent implements Event {
     private final String eventType;
@@ -9,7 +9,7 @@ public class PerformanceEvent implements Event {
 
     public PerformanceEvent() {
         this.eventType = EventTypes.PERFORMANCE.getType();
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     public String getTimestamp() {

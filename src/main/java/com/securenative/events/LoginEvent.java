@@ -2,7 +2,7 @@ package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
 import com.securenative.models.User;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class LoginEvent implements Event {
     private final String eventType;
@@ -12,7 +12,7 @@ public class LoginEvent implements Event {
     public LoginEvent(User user) {
         this.eventType = EventTypes.LOG_IN.getType();
         this.user = user;
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     @Override

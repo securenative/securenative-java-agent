@@ -3,6 +3,7 @@ package com.securenative.events;
 import com.securenative.enums.EventTypes;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
+import com.securenative.utils.DateUtils;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
@@ -22,7 +23,7 @@ public class AgentHeartBeatEvent implements Event {
 
     public AgentHeartBeatEvent() {
         this.eventType = EventTypes.HEARTBEAT.getType();
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
         try {
             this.hostname = InetAddress.getLocalHost().getHostName();
             this.hostId = Utils.calculateHash(InetAddress.getLocalHost().getHostAddress());

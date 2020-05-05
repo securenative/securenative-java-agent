@@ -2,6 +2,7 @@ package com.securenative.middlewares;
 
 import com.securenative.SecureNative;
 import com.securenative.utils.Logger;
+import com.securenative.utils.SignatureUtils;
 import com.securenative.utils.Utils;
 
 import javax.servlet.*;
@@ -38,7 +39,7 @@ public class VerifyWebhookMiddleware implements Filter {
             signature = req.getHeader(SIGNATURE_KEY);
         }
         String payload = getBody(servletRequest);
-        if (Utils.isVerifiedSnRequest(payload, signature, this.secureNative.getApiKey())) {
+        if (SignatureUtils.isValidSignature(payload, signature, this.secureNative.getApiKey())) {
             filterChain.doFilter(req, res);
             return;
         }

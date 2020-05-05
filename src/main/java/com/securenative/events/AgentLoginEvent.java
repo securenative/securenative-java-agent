@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.securenative.enums.EventTypes;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
+import com.securenative.utils.DateUtils;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import javafx.util.Pair;
@@ -68,7 +69,7 @@ public class AgentLoginEvent implements Event {
 
         this.agent = new Agent("Server Agent", agentPkg.getVersion(), System.getProperty("java.class.path"));
 
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     @Override

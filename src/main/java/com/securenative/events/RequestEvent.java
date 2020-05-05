@@ -2,7 +2,7 @@ package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
 import com.securenative.models.RequestOptions;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class RequestEvent implements Event {
     private final String eventType;
@@ -14,7 +14,7 @@ public class RequestEvent implements Event {
         this.eventType = EventTypes.REQUEST.getType();
         this.url = options.getUrl();
         this.body = options.getBody();
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     @Override

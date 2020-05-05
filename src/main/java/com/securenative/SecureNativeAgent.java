@@ -15,6 +15,9 @@ import java.lang.instrument.Instrumentation;
 public class SecureNativeAgent {
     public static void premain(String args, Instrumentation inst) {
         try {
+            // Configure logger
+            final Logger logger = Logger.getLogger(SecureNativeAgent.class);
+
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
@@ -22,10 +25,8 @@ public class SecureNativeAgent {
 
             // Set default app name
             config.setAppName(appPkg.getName());
+            Logger.initLogger(config.getLogLevel());
 
-            // Configure logger
-            Logger.initLogger(config.getLogLevel().toLowerCase());
-            final Logger logger = Logger.getLogger(SecureNative.class);
             logger.debug(String.format("Loaded Configurations %s", config.toString()));
 
             // Get relevant module

@@ -18,6 +18,7 @@ import com.securenative.models.AgentLoginResponse;
 import com.securenative.models.VerifyResult;
 import com.securenative.module.ModuleManager;
 import com.securenative.rules.RuleManager;
+import com.securenative.utils.DateUtils;
 import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import net.jodah.failsafe.Failsafe;
@@ -27,7 +28,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 public class SecureNative {
-    private String configUpdateTimestamp = Utils.generateTimestamp();
+    private String configUpdateTimestamp = DateUtils.generateTimestamp();
     private Boolean isAgentStarted = false;
     private final SecureNativeEventManager eventManager;
     private SecureNativeOptions options;

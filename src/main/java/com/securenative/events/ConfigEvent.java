@@ -1,7 +1,7 @@
 package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class ConfigEvent implements Event {
     private final String eventType;
@@ -11,7 +11,7 @@ public class ConfigEvent implements Event {
     public ConfigEvent(String appName) {
         this.eventType = EventTypes.CONFIG.getType();
         this.appName = appName;
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     @Override

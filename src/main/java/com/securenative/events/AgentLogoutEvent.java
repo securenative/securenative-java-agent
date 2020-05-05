@@ -1,7 +1,7 @@
 package com.securenative.events;
 
 import com.securenative.enums.EventTypes;
-import com.securenative.utils.Utils;
+import com.securenative.utils.DateUtils;
 
 public class AgentLogoutEvent implements Event {
     private final String eventType;
@@ -9,7 +9,7 @@ public class AgentLogoutEvent implements Event {
 
     public AgentLogoutEvent() {
         this.eventType = EventTypes.AGENT_LOG_OUT.getType();
-        this.timestamp = Utils.generateTimestamp();
+        this.timestamp = DateUtils.generateTimestamp();
     }
 
     @Override
