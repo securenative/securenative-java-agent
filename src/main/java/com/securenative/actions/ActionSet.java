@@ -1,7 +1,6 @@
 package com.securenative.actions;
 
 import com.google.common.net.InetAddresses;
-import com.securenative.utils.Logger;
 import com.securenative.utils.SchedulerUtils;
 import com.securenative.models.ActionItem;
 import com.securenative.enums.SetType;
@@ -11,13 +10,14 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class ActionSet {
     private String name;
     private Set<ActionItem> ip;
     private Set<ActionItem> user;
     private Set<ActionItem> country;
-    private static final Logger logger = Logger.getLogger(ActionSet.class);
+    private static final Logger logger = Logger.getLogger(ActionSet.class.getName());
 
     public ActionSet(String name) {
         this.name = name;
@@ -35,7 +35,7 @@ public class ActionSet {
             if (this.isValidIP(item)) {
                 this.ip.add(new ActionItem(item, timeout));
             } else {
-                logger.debug(String.format("Not a valid ip range! %s", item));
+                logger.fine(String.format("Not a valid ip range! %s", item));
             }
         } else if (type.equals(SetType.USER.name())) {
             this.user.add(new ActionItem(item, timeout));

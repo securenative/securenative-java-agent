@@ -6,18 +6,17 @@ import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.module.ModuleManager;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
-import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 
 import java.lang.instrument.Instrumentation;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
 public class SecureNativeAgent {
     public static void premain(String args, Instrumentation inst) {
         try {
-            // Configure logger
-            final Logger logger = Logger.getLogger(SecureNativeAgent.class);
-
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
@@ -25,39 +24,42 @@ public class SecureNativeAgent {
 
             // Set default app name
             config.setAppName(appPkg.getName());
-            Logger.initLogger(config.getLogLevel());
+            Logger rootLogger = LogManager.getLogManager().getLogger("");
+            rootLogger.setLevel(Level.ALL); // TODO map log level
 
-            logger.debug(String.format("Loaded Configurations %s", config.toString()));
+            System.out.println(String.format("Loaded SecureNative Agent Configurations %s", config.toString()));
 
             // Get relevant module
             ModuleManager moduleManager = new ModuleManager(appPkg);
             SecureNative secureNative = null;
             try {
+                System.out.println("Starting SecureNative Java Agent");
                 secureNative = new SecureNative(moduleManager, config);
             } catch (SecureNativeSDKException e) {
-                logger.error("Could not find securenative api key. aborting.");
-                System.err.println("Could not find securenative api key. aborting.");
+                System.err.println("Could not find SecureNative api key. aborting.");
                 System.exit(1);
             }
 
             // Start agent
-            logger.debug("Starting version compatibility check");
+            System.out.println("Starting version compatibility check");
 
             if (Utils.versionCompare(System.getProperty("java.version"), config.getMinSupportedVersion()) < 0) {
-                logger.error(String.format("This version of Java %s isn't supported by SecureNative, minimum required version is %s", appPkg.getVersion(), config.getMinSupportedVersion()));
-                logger.error("Visit our docs to find out more: https://docs.securenative.com/docs/integrations/sdk/#java");
+                System.err.println(String.format("This version of Java %s isn't supported by SecureNative, minimum required version is %s", appPkg.getVersion(), config.getMinSupportedVersion()));
+                System.err.println("Visit our docs to find out more: https://docs.securenative.com/docs/integrations/sdk/#java");
                 System.exit(1);
             }
 
             SecureNative finalSecureNative = secureNative;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                logger.debug("Received exit signal, exiting..");
+                System.out.println("Received exit signal, exiting SecureNative agent..");
                 finalSecureNative.stopAgent();
                 System.exit(0);
             }));
 
             secureNative.startAgent();
+            System.out.println("SecureNative agent was successfully started");
         } catch (Exception e) {
+            System.out.println("Failed to start SecureNative Java Agent");
             System.out.println(e);
         }
     }

@@ -11,9 +11,9 @@ import com.securenative.models.RequestContext;
 import com.securenative.models.UserTraits;
 import com.securenative.utils.DateUtils;
 import com.securenative.utils.EncryptionUtils;
-import com.securenative.utils.Logger;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class SDKEvent implements Event {
     private final String rid;
@@ -23,7 +23,7 @@ public class SDKEvent implements Event {
     public RequestContext request;
     public String timestamp;
     public Map<Object, Object> properties;
-    public static final Logger logger = Logger.getLogger(SecureNative.class);
+    public static final Logger logger = Logger.getLogger(SecureNative.class.getName());
 
     public SDKEvent(EventOptions event, SecureNativeOptions options) {
         SecureNativeContext context = event.getContext() != null?  event.getContext() : SecureNativeContextBuilder.defaultContextBuilder().build();
@@ -54,7 +54,7 @@ public class SDKEvent implements Event {
             String decryptedClientToken = EncryptionUtils.decrypt(token, key);
             return mapper.readValue(decryptedClientToken, ClientToken.class);
         } catch (Exception ex) {
-            logger.error("Failed to decrypt token");
+            logger.severe("Failed to decrypt token");
         }
 
         return new ClientToken();

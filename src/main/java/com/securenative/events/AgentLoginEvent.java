@@ -5,16 +5,16 @@ import com.securenative.enums.EventTypes;
 import com.securenative.snpackage.PackageItem;
 import com.securenative.snpackage.PackageManager;
 import com.securenative.utils.DateUtils;
-import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import javafx.util.Pair;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
 public class AgentLoginEvent implements Event {
     private static final String PACKAGE_FILE_NAME = "pom.xml";
-    private static final Logger logger = Logger.getLogger(AgentLoginEvent.class);
+    private static final Logger logger = Logger.getLogger(AgentLoginEvent.class.getName());
 
     @JsonProperty("eventType")
     private final String eventType;
@@ -63,7 +63,7 @@ public class AgentLoginEvent implements Event {
             hostId = InetAddress.getLocalHost().getHostAddress();
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            logger.debug(String.join("Could not find hostname and/or host address; ", e.toString()));
+            logger.fine(String.join("Could not find hostname and/or host address; ", e.toString()));
         }
         this.os = new Os(hostId, hostname, System.getProperty("os.arch"), System.getProperty("os.name"), Runtime.getRuntime().availableProcessors(), Runtime.getRuntime().totalMemory());
 

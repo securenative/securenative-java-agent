@@ -8,11 +8,7 @@ public class InterceptorManager {
         new VerifyWebhookMiddleware(secureNative);
     }
 
-    public static void applyAgentInterceptor(String framework, String sessionId) {
-        if (framework.toLowerCase().equals("spring")) {
-            new SpringAgentHeaderMiddleware(sessionId);
-        } else {
-            new AgentHeaderMiddleware(sessionId);
-        }
+    public static void applyAgentInterceptor(String sessionId) {
+        new AgentHeaderMiddleware(sessionId);
     }
 }

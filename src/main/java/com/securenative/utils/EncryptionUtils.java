@@ -7,11 +7,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 
 public class EncryptionUtils {
     private static final String EMPTY_STRING = "";
-    private static final Logger logger = Logger.getLogger(EncryptionUtils.class);
+    private static final Logger logger = Logger.getLogger(EncryptionUtils.class.getName());
     private static final int AES_KEY_SIZE = 32;
     private final static char[] HEX = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
@@ -67,7 +68,7 @@ public class EncryptionUtils {
             }
             return byteArrayToHex(cipher.doFinal(addAll(ivBytes,text.getBytes(StandardCharsets.UTF_8)))).trim();
         } catch (Exception ex) {
-            logger.error("Unable to encrypt, err:", ex.getMessage());
+            logger.severe(String.format("Unable to encrypt, err: %s", ex.getMessage()));
         }
 
         return EMPTY_STRING;
@@ -88,7 +89,7 @@ public class EncryptionUtils {
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, IVspec);
             return new String(cipher.doFinal(cipherText), StandardCharsets.UTF_8).trim();
         } catch (Exception ex) {
-            logger.error("Unable to decrypt", ex.getMessage());
+            logger.severe(String.format("Unable to decrypt; %s", ex.getMessage()));
         }
 
         return EMPTY_STRING;

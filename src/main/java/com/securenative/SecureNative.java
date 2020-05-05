@@ -19,13 +19,13 @@ import com.securenative.models.VerifyResult;
 import com.securenative.module.ModuleManager;
 import com.securenative.rules.RuleManager;
 import com.securenative.utils.DateUtils;
-import com.securenative.utils.Logger;
 import com.securenative.utils.Utils;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.logging.*;
 
 public class SecureNative {
     private String configUpdateTimestamp = DateUtils.generateTimestamp();
@@ -38,7 +38,7 @@ public class SecureNative {
     private ExecuteManager configurationUpdater;
     private final ModuleManager moduleManager;
 
-    public static final Logger logger = Logger.getLogger(SecureNative.class);
+    public static final Logger logger = Logger.getLogger(SecureNative.class.getName());
 
     public SecureNative(ModuleManager moduleManager, SecureNativeOptions options) throws SecureNativeSDKException {
         if (Utils.isNullOrEmpty(options.getApiKey())) {
@@ -60,7 +60,7 @@ public class SecureNative {
     }
 
     private void handleConfigUpdate(AgentConfigOptions config) {
-        logger.debug("Handling configuration update");
+        logger.fine("Handling configuration update");
 
         if (config == null) {
             return;
@@ -82,7 +82,7 @@ public class SecureNative {
     }
 
     public String agentLogin() throws Exception {
-        logger.debug("Performing agent login");
+        logger.fine("Performing agent login");
         String requestUrl = String.format("%s/%s", this.options.getApiUrl(), ApiRoute.LOGIN.getRoute());
 
         String framework = this.moduleManager.getFramework();
@@ -95,16 +95,16 @@ public class SecureNative {
         this.handleConfigUpdate(res.getConfig());
 
         if (res.getSessionId().toLowerCase().equals("invalid api key id")) {
-            logger.debug("Failed to perform agent login: Invalid api key id");
+            logger.fine("Failed to perform agent login: Invalid api key id");
             return null;
         }
 
-        logger.debug(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
+        logger.fine(String.format("Agent successfully logged-in, sessionId: %s", res.getSessionId()));
         return res.getSessionId();
     }
 
     public Boolean agentLogout() {
-        logger.debug("Performing agent logout");
+        logger.fine("Performing agent logout");
         String requestUrl = String.format("%s/%s", this.options.getApiUrl(), ApiRoute.LOGOUT.getRoute());
 
         Event event = EventFactory.createEvent(EventTypes.AGENT_LOG_OUT);
@@ -112,24 +112,24 @@ public class SecureNative {
             this.eventManager.sendAsync(event, requestUrl, true);
             this.heartbeat.shutdown();
             this.configurationUpdater.shutdown();
-            logger.debug("Agent successfully logged-out");
+            logger.fine("Agent successfully logged-out");
             return true;
         } catch (Exception e) {
-            logger.debug(String.join("Failed to perform agent logout; ", e.toString()));
+            logger.fine(String.join("Failed to perform agent logout; ", e.toString()));
         }
         return false;
     }
 
     public void startAgent() throws IOException, SecureNativeParseException {
         if (!this.isAgentStarted) {
-            logger.debug("Attempting to start agent");
+            logger.fine("Attempting to start agent");
             if (this.options.getApiKey() == null) {
-                logger.error("You must pass your SecureNative api key");
+                logger.severe("You must pass your SecureNative api key");
                 return;
             }
 
             if (this.options.getDisabled()) {
-                logger.debug("Skipping agent start");
+                logger.fine("Skipping agent start");
                 return;
             }
 
@@ -141,32 +141,32 @@ public class SecureNative {
             String sessionId = Failsafe.with(retryPolicy).get(this::agentLogin);
 
             if (sessionId != null) {
-                InterceptorManager.applyAgentInterceptor(sessionId, this.moduleManager.getFramework());
+                InterceptorManager.applyAgentInterceptor(sessionId);
                 this.isAgentStarted = true;
 
                 // Start heartbeat manager
-                logger.debug("Starting heartbeat manager");
+                logger.fine("Starting heartbeat manager");
                 this.heartbeat = new ExecuteManager(this.options.getHeartbeatDelay(), this.options.getHeartbeatPeriod(), "heartbeat event", this.heartbeatTask());
                 heartbeat.execute();
 
                 // Start configuration updater
-                logger.debug("Starting configuration update manager");
+                logger.fine("Starting configuration update manager");
                 this.configurationUpdater = new ExecuteManager(this.options.getConfigUpdateDelay(), this.options.getConfigUpdatePeriod(), "configuration update event", this.configUpdaterTask());
                 configurationUpdater.execute();
 
-                logger.debug("Agent successfully started!");
+                logger.fine("Agent successfully started!");
             } else {
-                logger.debug("No session obtained, unable to start agent!");
+                logger.fine("No session obtained, unable to start agent!");
                 this.isAgentStarted = false;
             }
         } else {
-            logger.debug("Agent already started, skipping");
+            logger.fine("Agent already started, skipping");
         }
     }
 
     public void stopAgent() {
         if (this.isAgentStarted) {
-            logger.debug("Attempting to stop agent");
+            logger.fine("Attempting to stop agent");
             this.eventManager.stopEventsPersist();
             Boolean status = this.agentLogout();
             if (status) {
@@ -193,7 +193,7 @@ public class SecureNative {
     }
 
     public VerifyResult risk(Event event) throws IOException, SecureNativeParseException {
-        logger.debug("Risk call");
+        logger.fine("Risk call");
         String requestUrl = String.format("%s/%s", this.options.getApiUrl(), ApiRoute.RISK.getRoute());
         return this.eventManager.sendSync(VerifyResult.class, event, requestUrl);
     }

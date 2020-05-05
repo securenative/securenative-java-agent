@@ -9,10 +9,11 @@ import com.securenative.models.UserTraits;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class EventOptionsBuilder {
     private final int MAX_PROPERTIES_SIZE = 10;
-    private static final Logger logger = Logger.getLogger(EventOptionsBuilder.class);
+    private static final Logger logger = Logger.getLogger(EventOptionsBuilder.class.getName());
     private final EventOptions eventOptions;
 
     public static EventOptionsBuilder builder(String eventType){

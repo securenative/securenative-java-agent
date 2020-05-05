@@ -11,17 +11,17 @@ import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.http.HttpClient;
 import com.securenative.http.HttpResponse;
 import com.securenative.models.RequestOptions;
-import com.securenative.utils.Logger;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 
 public class SecureNativeEventManager implements EventManager {
-    private static final Logger logger = Logger.getLogger(SecureNativeEventManager.class);
+    private static final Logger logger = Logger.getLogger(SecureNativeEventManager.class.getName());
     private final int[] coefficients = new int[]{1, 1, 2, 3, 5, 8, 13};
     private int attempt = 0;
     private Boolean sendEnabled = false;
@@ -42,12 +42,12 @@ public class SecureNativeEventManager implements EventManager {
     @Override
     public <T> T sendSync(Class<T> clazz, Event event, String url) throws IOException, SecureNativeParseException {
         if (this.options.getDisabled()) {
-            logger.warn("SDK is disabled, no operation will be performed");
+            logger.warning("SDK is disabled, no operation will be performed");
             return null;
         }
 
         String body = mapper.writeValueAsString(event);
-        logger.debug("Attempting to send event", body);
+        logger.fine(String.format("Attempting to send event; %s", body));
         HttpResponse response = this.httpClient.post(url, body);
         if (!response.isOk()) {
             logger.info(String.format("Secure Native http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
@@ -58,7 +58,7 @@ public class SecureNativeEventManager implements EventManager {
         try {
             return mapper.readValue(responseBody, clazz);
         } catch (Exception ex) {
-            logger.error("Failed to parse response body", ex.getMessage());
+            logger.severe(String.format("Failed to parse response body; %s", ex.getMessage()));
             throw new SecureNativeParseException(ex.getMessage());
         }
     }
@@ -73,7 +73,7 @@ public class SecureNativeEventManager implements EventManager {
             String body = mapper.writeValueAsString(event);
             this.events.add(new RequestOptions(url, body, retry));
         } catch (JsonProcessingException e) {
-            logger.error("Failed to deserialize event", e.getMessage());
+            logger.severe(String.format("Failed to deserialize event; %s", e.getMessage()));
         }
     }
 
@@ -89,17 +89,17 @@ public class SecureNativeEventManager implements EventManager {
                 if (!resp.isOk()) {
                     throw new SecureNativeHttpException(String.valueOf(resp.getStatusCode()));
                 }
-                logger.debug("Event successfully sent", body);
+                logger.fine(String.format("Event successfully sent; %s", body));
                 // remove the event from queue
                 events.remove(requestOptions);
             } catch (Exception ex) {
-                logger.error("Failed to send event", ex.getMessage());
+                logger.severe(String.format("Failed to send event; %s", ex.getMessage()));
                 if (requestOptions.getRetry()) {
                     if (attempt++ == coefficients.length) {
                         attempt = 0;
                     }
                     int backoff = coefficients[attempt] * this.options.getInterval();
-                    logger.debug("BackOff automatic sending by", backoff);
+                    logger.fine(String.format("BackOff automatic sending by %s", backoff));
                     this.sendEnabled = false;
                     Thread.sleep(backoff);
                     this.sendEnabled = true;
@@ -112,9 +112,9 @@ public class SecureNativeEventManager implements EventManager {
     }
 
     public void startEventsPersist() {
-        logger.debug("Starting automatic event persistence");
+        logger.fine("Starting automatic event persistence");
         if (!this.options.getAutoSend() || this.sendEnabled) {
-            logger.debug("Automatic event persistence disabled, you should manually persist events");
+            logger.fine("Automatic event persistence disabled, you should manually persist events");
             return;
         }
 
@@ -130,7 +130,7 @@ public class SecureNativeEventManager implements EventManager {
 
     public void stopEventsPersist() {
         if (this.sendEnabled) {
-            logger.debug("Attempting to stop automatic event persistence");
+            logger.fine("Attempting to stop automatic event persistence");
 
             try {
                 this.scheduler.shutdown();
@@ -139,7 +139,7 @@ public class SecureNativeEventManager implements EventManager {
             } catch (InterruptedException ignored) {
             }
 
-            logger.debug("Stopped event persistence");
+            logger.fine("Stopped event persistence");
         }
     }
 }

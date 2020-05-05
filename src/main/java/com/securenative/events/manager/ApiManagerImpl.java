@@ -10,12 +10,13 @@ import com.securenative.events.SDKEvent;
 import com.securenative.exceptions.SecureNativeSDKException;
 import com.securenative.models.EventOptions;
 import com.securenative.models.VerifyResult;
-import com.securenative.utils.Logger;
+
+import java.util.logging.Logger;
 
 public class ApiManagerImpl implements ApiManager {
     private final EventManager eventManager;
     private final SecureNativeOptions options;
-    public static final Logger logger = Logger.getLogger(SecureNative.class);
+    public static final Logger logger = Logger.getLogger(SecureNative.class.getName());
 
     public ApiManagerImpl(EventManager eventManager, SecureNativeOptions options) throws SecureNativeSDKException {
         this.eventManager = eventManager;
@@ -38,7 +39,7 @@ public class ApiManagerImpl implements ApiManager {
         try {
             return this.eventManager.sendSync(VerifyResult.class , event, requestUrl);
         } catch (Exception ex) {
-            logger.error("Failed to call verify", ex);
+            logger.severe(String.format("Failed to call verify; %s", ex));
             return this.options.getFailoverStrategy() == FailoverStrategy.FAIL_OPEN ?
                     new VerifyResult(RiskLevel.LOW, 0, new String[0])
                     : new VerifyResult(RiskLevel.HIGH, 1, new String[0]);
