@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Premain-Class: com.securenative.SecureNativeAgent
+Premain-Class: com.securenative.agent.SecureNativeAgent
 Can-Retransform-Classes: true
 Can-Redefine-Classes: true
 Can-Set-Native-Method-Prefix: true
