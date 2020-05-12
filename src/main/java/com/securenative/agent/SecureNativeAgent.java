@@ -60,7 +60,7 @@ public class SecureNativeAgent {
             System.out.println("SecureNative agent was successfully started");
         } catch (Exception e) {
             System.out.println("Failed to start SecureNative Java Agent");
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }
