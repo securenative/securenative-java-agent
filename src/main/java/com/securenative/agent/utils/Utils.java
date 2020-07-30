@@ -1,8 +1,8 @@
 package com.securenative.agent.utils;
 
-import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.AbstractMap;
 import java.util.Scanner;
 
 public class Utils {
@@ -39,13 +39,13 @@ public class Utils {
         return DigestUtils.sha256Hex(str);
     }
 
-    public static Pair<Long, String> getProcessInfo() {
+    public static AbstractMap.SimpleEntry<Long, String> getProcessInfo() {
         String processName = java.lang.management.ManagementFactory.getRuntimeMXBean().getName();
-        Pair<Long, String> pair = new Pair<>(0L, "");
+        AbstractMap.SimpleEntry<Long, String> pair = new AbstractMap.SimpleEntry<>(0L, "");
         if (processName != null && processName.length() > 0) {
             try {
                 String[] processTokens = processName.split("@");
-                pair = new Pair<>(Long.parseLong(processTokens[0]), processTokens[1]);
+                pair = new AbstractMap.SimpleEntry<>(Long.parseLong(processTokens[0]), processTokens[1]);
             }
             catch (Exception e) {
                 return pair;

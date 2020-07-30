@@ -6,10 +6,10 @@ import com.securenative.agent.utils.Utils;
 import com.securenative.agent.snpackage.PackageItem;
 import com.securenative.agent.snpackage.PackageManager;
 import com.securenative.agent.utils.DateUtils;
-import javafx.util.Pair;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.AbstractMap;
 import java.util.logging.Logger;
 
 public class AgentLoginEvent implements Event {
@@ -50,7 +50,7 @@ public class AgentLoginEvent implements Event {
 
         this.snRuntime = new SnRuntime("java", System.getProperty("java.version"));
 
-        Pair<Long, String> processInfo = Utils.getProcessInfo();
+        AbstractMap.SimpleEntry<Long, String> processInfo = Utils.getProcessInfo();
         this.process = new SnProcess(
                 processInfo.getKey(),
                 processInfo.getValue(),
