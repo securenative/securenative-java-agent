@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ActionManager {
-    private static final Map<String, String> actionProcessors = new HashMap<>() {{
+    private static final Map<String, String> actionProcessors = new HashMap<String, String>() {{
         put(ProcessesType.BLOCK_IP.getType(), ProcessorType.BLACKLIST_IP.getType());
         put(ProcessesType.UNBLOCK_IP.getType(), ProcessorType.WHITELIST_IP.getType());
         put(ProcessesType.ALLOW_IP.getType(), ProcessorType.DELETE_BLACKLISTED.getType());
