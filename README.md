@@ -7,6 +7,18 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/securenative/securenative-java-agent">
+    <img alt="Github Actions" src="https://github.com/securenative/securenative-java-agent/workflows/Build/badge.svg">
+  </a>
+  <a href="https://codecov.io/gh/securenative/securenative-java-agent">
+    <img src="https://codecov.io/gh/securenative/securenative-java-agent/branch/master/graph/badge.svg" />
+  </a>
+  <a href="https://search.maven.org/artifact/com.securenative.java/securenative-java-agent">
+      <img src="https://img.shields.io/maven-central/v/com.securenative.java/securenative-java-agent.svg" alt="npm version" height="20">
+    </a>
+</p>
+
+<p align="center">
   <a href="https://docs.securenative.com">Documentation</a> |
   <a href="https://docs.securenative.com/quick-start">Quick Start</a> |
   <a href="https://blog.securenative.com">Blog</a> |
