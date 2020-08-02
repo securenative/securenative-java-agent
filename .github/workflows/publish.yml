@@ -42,6 +42,9 @@ jobs:
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
 
+      - name: Package Agent
+        run: mvn deploy -Dregistry=https://maven.pkg.github.com/securenative -Dtoken=GH_TOKEN
+
       - name: Notify slack success
         if: success()
         env:
