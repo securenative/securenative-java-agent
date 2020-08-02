@@ -2,13 +2,15 @@ package com.securenative.agent.config;
 
 import com.securenative.agent.ResourceStreamImpl;
 import com.securenative.agent.SecureNative;
-import com.securenative.agent.exceptions.SecureNativeConfigException;
 import com.securenative.agent.utils.Utils;
 import com.securenative.agent.enums.FailoverStrategy;
 import com.securenative.agent.ResourceStream;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -16,6 +18,7 @@ public class ConfigurationManager {
     private static final String DEFAULT_CONFIG_FILE = "securenative.properties";
     private static final String CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_CONFIG_FILE";
     private static ResourceStream resourceStream = new ResourceStreamImpl();
+
     private static String getEnvOrDefault(String envName, String defaultValue) {
         String envValue = System.getenv(envName);
         if (envValue != null) {
@@ -52,23 +55,40 @@ public class ConfigurationManager {
         return properties;
     }
 
-    private static String getPropertyOrEnvOrDefault(Properties properties, String key, Object defaultValue){
-        String defaultStrValue = defaultValue == null? null: defaultValue.toString();
-        Object  res = properties.getOrDefault(key, getEnvOrDefault(key, defaultStrValue));
-        return res == null? null: res.toString();
+    private static String getPropertyOrEnvOrDefault(Properties properties, String key, Object defaultValue) {
+        String defaultStrValue = defaultValue == null ? null : defaultValue.toString();
+        Object res = properties.getOrDefault(key, getEnvOrDefault(key, defaultStrValue));
+        return res == null ? null : res.toString();
     }
 
-    public static SecureNativeConfigurationBuilder configBuilder(){
-        return  SecureNativeConfigurationBuilder.defaultConfigBuilder();
+    public static SecureNativeConfigurationBuilder configBuilder() {
+        return SecureNativeConfigurationBuilder.defaultConfigBuilder();
     }
 
-    public static SecureNativeOptions loadConfig() throws SecureNativeConfigException {
-        SecureNativeConfigurationBuilder builder =  SecureNativeConfigurationBuilder.defaultConfigBuilder();
-        SecureNativeOptions defaultOptions = builder.build();
+    public static SecureNativeOptions loadConfig() {
         String resourceFilePath = getEnvOrDefault(CUSTOM_CONFIG_FILE_ENV_NAME, DEFAULT_CONFIG_FILE);
         Properties properties = readResourceFile(resourceFilePath);
+        return getOptions(properties);
+    }
 
-        builder.withApiKey(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_API_KEY",  defaultOptions.getApiKey()))
+    public static SecureNativeOptions loadConfig(Path path) {
+        Properties properties = new Properties();
+        InputStream input;
+        try {
+            input = new FileInputStream(path.toString());
+            properties.load(input);
+        } catch (IOException ignore) {
+
+        }
+
+        return getOptions(properties);
+    }
+
+    private static SecureNativeOptions getOptions(Properties properties) {
+        SecureNativeConfigurationBuilder builder = SecureNativeConfigurationBuilder.defaultConfigBuilder();
+        SecureNativeOptions defaultOptions = builder.build();
+
+        builder.withApiKey(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_API_KEY", defaultOptions.getApiKey()))
                 .withApiUrl(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_API_URL", defaultOptions.getApiUrl()))
                 .withInterval(Utils.parseIntegerOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_INTERVAL", defaultOptions.getInterval()), defaultOptions.getInterval()))
                 .withMaxEvents(Utils.parseIntegerOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_MAX_EVENTS", defaultOptions.getMaxEvents()), defaultOptions.getMaxEvents()))
@@ -76,12 +96,8 @@ public class ConfigurationManager {
                 .withAutoSend(Utils.parseBooleanOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_AUTO_SEND", defaultOptions.getAutoSend()), defaultOptions.getAutoSend()))
                 .withDisable(Utils.parseBooleanOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_DISABLE", defaultOptions.getDisabled()), defaultOptions.getDisabled()))
                 .withLogLevel(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_LOG_LEVEL", defaultOptions.getLogLevel()))
-                .withFailoverStrategy(FailoverStrategy.fromString(Objects.requireNonNull(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_FAILOVER_STRATEGY", defaultOptions.getFailoverStrategy())),defaultOptions.getFailoverStrategy()))
-                .withAppName(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_APP_NAME", defaultOptions.getAppName()))
-                .withHeartbeatDelay(Utils.parseLongOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_HEARTBEAT_DELAY", defaultOptions.getHeartbeatDelay()), defaultOptions.getHeartbeatDelay()))
-                .withHeartbeatPeriod(Utils.parseLongOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_HEARTBEAT_PERIOD", defaultOptions.getHeartbeatPeriod()), defaultOptions.getHeartbeatPeriod()))
-                .withConfigUpdateDelay(Utils.parseLongOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_CONFIG_DELAY", defaultOptions.getConfigUpdateDelay()), defaultOptions.getConfigUpdateDelay()))
-                .withConfigUpdatePeriod(Utils.parseLongOrDefault(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_CONFIG_PERIOD", defaultOptions.getConfigUpdatePeriod()), defaultOptions.getConfigUpdatePeriod()));
+                .withFailoverStrategy(FailoverStrategy.fromString(Objects.requireNonNull(getPropertyOrEnvOrDefault(properties, "SECURENATIVE_FAILOVER_STRATEGY", defaultOptions.getFailoverStrategy())), defaultOptions.getFailoverStrategy()));
+
         return builder.build();
     }
 }

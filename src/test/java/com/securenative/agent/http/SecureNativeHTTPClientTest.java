@@ -14,14 +14,11 @@ public class SecureNativeHTTPClientTest extends HTTPServerMock {
     @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     @DisplayName("Should make simple http post call")
     public void shouldMakeSimplePostCallTest() throws IOException {
-        configBuilder =  ConfigurationManager.configBuilder()
-                                             .withApiKey("YOUR_API_KEY");
-
+        configBuilder = ConfigurationManager.configBuilder().withApiKey("YOUR_API_KEY").withTimeout(120000);
         client = sandbox().mock(200, "SOME_BODY");
-
         String payload = "{\"event\":\"SOME_EVENT_NAME\"}";
 
-        HttpResponse response = client.post("track", payload);
+        HttpResponse response = client.post(options.getApiUrl(), payload);
 
         assertThat(response.isOk()).isEqualTo(true);
         assertThat(response.getStatusCode()).isEqualTo(200);

@@ -5,6 +5,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class SecureNativeHTTPClient implements HttpClient {
@@ -38,7 +39,7 @@ public class SecureNativeHTTPClient implements HttpClient {
                 .build();
         try (Response response = this.client.newCall(request).execute()) {
            int statusCode = response.code();
-           String responseBody = response.body().string();
+           String responseBody = Objects.requireNonNull(response.body()).string();
            return new HttpResponse(response.isSuccessful(), statusCode, responseBody);
         }
     }

@@ -51,9 +51,7 @@ public abstract class HTTPServerMock {
     }
 
     protected HTTPServerMock sandbox(){
-        this.options = configBuilder.withApiUrl(serverUrl.toString())
-                                    .build();
-
+        this.options = configBuilder.withApiUrl(serverUrl.toString()).build();
         this.client = new SecureNativeHTTPClient(options);
 
         return this;

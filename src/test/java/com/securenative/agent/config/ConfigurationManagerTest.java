@@ -138,8 +138,7 @@ public class ConfigurationManagerTest {
         assertThat(options.getApiKey()).isNull();
         assertThat(options.getApiUrl()).isEqualTo("https://api.securenative.com/collector/api/v1");
         assertThat(options.getInterval()).isEqualTo(1000);
-        assertThat(options.getTimeout()).isEqualTo(1500);
-        assertThat(options.getTimeout()).isEqualTo(1500);
+        assertThat(options.getTimeout()).isEqualTo(120000);
         assertThat(options.getMaxEvents()).isEqualTo(1000);
         assertThat(options.getAutoSend()).isEqualTo(true);
         assertThat(options.getAutoSend()).isEqualTo(true);
