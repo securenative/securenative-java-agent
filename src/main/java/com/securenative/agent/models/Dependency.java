@@ -20,4 +20,12 @@ public class Dependency {
     public String getVersion() {
         return this.version;
     }
+
+    @Override
+    public String toString() {
+        return "Dependency{" +
+                "name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                '}';
+    }
 }

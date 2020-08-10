@@ -2,10 +2,7 @@ package com.securenative.agent.snpackage;
 
 import com.securenative.agent.utils.Utils;
 import com.securenative.agent.models.Dependency;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -43,7 +40,13 @@ public class PackageManager {
                 Element eElement = (Element) node;
                 String name = eElement.getElementsByTagName("groupId").item(0).getTextContent().concat(
                         ":").concat(eElement.getElementsByTagName("artifactId").item(0).getTextContent());
-                dependencies[j] = new Dependency(name, eElement.getElementsByTagName("version").item(0).getTextContent());
+
+                try {
+                    dependencies[j] = new Dependency(name, eElement.getElementsByTagName("version").item(0).getTextContent());
+                } catch (Exception e) {
+                    dependencies[j] = new Dependency(name, "LATEST");
+                }
+
                 j += 1;
             }
         }
@@ -82,7 +85,10 @@ public class PackageManager {
         }
 
         Dependency[] dependencies = parseDependencies(deps);
-        String dependenciesHash = Utils.calculateHash(Arrays.toString(dependencies));
+        String dependenciesHash = "";
+        if (dependencies.length > 0) {
+            dependenciesHash = Utils.calculateHash(Arrays.toString(dependencies));
+        }
 
         String name = groupId.concat(":").concat(artifactId);
         return new PackageItem(name, version, dependencies, dependenciesHash);

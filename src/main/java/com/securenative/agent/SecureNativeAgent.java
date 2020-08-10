@@ -20,14 +20,16 @@ public class SecureNativeAgent {
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
+            System.out.print("Loading configuration");
             SecureNativeOptions config = ConfigurationManager.loadConfig();
 
             // Set default app name
+            System.out.print("Setting app name");
             config.setAppName(appPkg.getName());
             Logger rootLogger = LogManager.getLogManager().getLogger("");
             rootLogger.setLevel(Level.FINE); // TODO implement securenative logger
 
-            System.out.println(String.format("Loaded SecureNative Agent Configurations %s", config.toString()));
+            System.out.printf("Loaded SecureNative Agent Configurations %s%n", config.toString());
 
             // Get relevant module
             ModuleManager moduleManager = new ModuleManager(appPkg);
@@ -60,7 +62,7 @@ public class SecureNativeAgent {
             System.out.println("SecureNative agent was successfully started");
         } catch (Exception e) {
             System.out.println("Failed to start SecureNative Java Agent");
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }
