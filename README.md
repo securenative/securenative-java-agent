@@ -60,7 +60,7 @@ EOF
 
 ### Notes:
 1. Make sure you're using the correct `jar` file! Maven repository contains various versions of the jar file, make sure you've downloaded the one marked **"with-dependencies"**.
-2. To run using JetBrains Intellij add the following command to `run/debug configurstion` --> `VM options`  
+2. To run using JetBrains Intellij add the following command to `run/debug configuration` --> `VM options`  
 ```bash
 -javaagent:/path/to/securenative-agent-with-dependencies.jar -jar /path/to/application.jar
 ```   
