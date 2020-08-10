@@ -45,11 +45,9 @@ Create free account at [register](https://console.securenative.com/register) to 
 
 Create a basic setting file inside your project's folder:  
 ```shell script
-cat > securenative.json <<EOF
-{
-  "SECURENATIVE_APP_NAME": "YOUR_APPLICATION_NAME",
-  "SECURENATIVE_API_KEY": "YOUR_API_KEY"
-}
+cat > securenative.properties <<EOF
+SECURENATIVE_APP_NAME=YOUR_APPLICATION_NAME
+SECURENATIVE_API_KEY=YOUR_API_KEY
 EOF
 ```
 
