@@ -17,12 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class SecureNativeTest{
+public class SecureNativeTest {
     @Test
     @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
     @Order(1)
     @DisplayName("Should init SDK with all public methods defined")
-    public void initSDKWithPublicMethodsDefinedTest()  {
+    public void initSDKWithPublicMethodsDefinedTest() {
         assertThat(SecureNative.class).hasDeclaredMethods("agentLogin", "agentLogout", "startAgent", "stopAgent");
     }
 
@@ -37,7 +37,7 @@ public class SecureNativeTest{
         SecureNativeOptions config = ConfigurationManager.loadConfig();
         ModuleManager moduleManager = new ModuleManager(appPkg);
 
-        assertThrows(SecureNativeSDKException.class, ()->{
+        assertThrows(SecureNativeSDKException.class, () -> {
             SecureNative secureNative = new SecureNative(moduleManager, config);
         });
     }
