@@ -20,11 +20,11 @@ public class SecureNativeAgent {
             // Set package information
             String PACKAGE_FILE_NAME = "/pom.xml";
             PackageItem appPkg = PackageManager.getPackage(System.getProperty("user.dir").concat(PACKAGE_FILE_NAME));
-            System.out.print("Loading configuration");
+            System.out.println("Loading configuration");
             SecureNativeOptions config = ConfigurationManager.loadConfig();
 
             // Set default app name
-            System.out.print("Setting app name");
+            System.out.println("Setting app name");
             config.setAppName(appPkg.getName());
             Logger rootLogger = LogManager.getLogManager().getLogger("");
             rootLogger.setLevel(Level.FINE); // TODO implement securenative logger
@@ -46,7 +46,7 @@ public class SecureNativeAgent {
             System.out.println("Starting version compatibility check");
 
             if (Utils.versionCompare(System.getProperty("java.version"), config.getMinSupportedVersion()) < 0) {
-                System.err.println(String.format("This version of Java %s isn't supported by SecureNative, minimum required version is %s", appPkg.getVersion(), config.getMinSupportedVersion()));
+                System.err.printf("This version of Java %s isn't supported by SecureNative, minimum required version is %s%n", appPkg.getVersion(), config.getMinSupportedVersion());
                 System.err.println("Visit our docs to find out more: https://docs.securenative.com/docs/integrations/sdk/#java");
                 System.exit(1);
             }

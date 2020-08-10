@@ -1,21 +1,19 @@
 package com.securenative.agent.config;
 
-import com.securenative.agent.ResourceStreamImpl;
-import com.securenative.agent.SecureNative;
-import com.securenative.agent.utils.Utils;
-import com.securenative.agent.enums.FailoverStrategy;
 import com.securenative.agent.ResourceStream;
+import com.securenative.agent.ResourceStreamImpl;
+import com.securenative.agent.enums.FailoverStrategy;
+import com.securenative.agent.utils.Utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
 
 public class ConfigurationManager {
-    private static final String DEFAULT_CONFIG_FILE = "securenative.properties";
+    private static final String DEFAULT_CONFIG_FILE = System.getProperty("user.dir").concat("/securenative.properties");
     private static final String CUSTOM_CONFIG_FILE_ENV_NAME = "SECURENATIVE_CONFIG_FILE";
     private static ResourceStream resourceStream = new ResourceStreamImpl();
 
@@ -47,11 +45,12 @@ public class ConfigurationManager {
 
     private static Properties readResourceFile(String resourcePath) {
         Properties properties = new Properties();
-        URL resourceUrl = SecureNative.class.getClassLoader().getResource(resourcePath);
-        if (resourceUrl != null) {
-            InputStream resourceStream = ConfigurationManager.resourceStream.getInputStream(resourcePath);
-            properties = loadProperties(properties, resourceStream);
-        }
+        InputStream input;
+        try {
+            input = new FileInputStream(resourcePath);
+            properties.load(input);
+        } catch (IOException ignore) {}
+
         return properties;
     }
 

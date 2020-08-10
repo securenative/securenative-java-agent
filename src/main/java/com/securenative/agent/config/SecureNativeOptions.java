@@ -167,4 +167,25 @@ public class SecureNativeOptions {
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
+
+    @Override
+    public String toString() {
+        return "SecureNativeOptions{" +
+                "apiKey='" + apiKey + '\'' +
+                ", apiUrl='" + apiUrl + '\'' +
+                ", appName='" + appName + '\'' +
+                ", interval=" + interval +
+                ", maxEvents=" + maxEvents +
+                ", timeout=" + timeout +
+                ", autoSend=" + autoSend +
+                ", disable=" + disable +
+                ", logLevel='" + logLevel + '\'' +
+                ", failoverStrategy=" + failoverStrategy +
+                ", heartbeatDelay=" + heartbeatDelay +
+                ", heartbeatPeriod=" + heartbeatPeriod +
+                ", configUpdateDelay=" + configUpdateDelay +
+                ", configUpdatePeriod=" + configUpdatePeriod +
+                ", minSupportedVersion='" + minSupportedVersion + '\'' +
+                '}';
+    }
 }
