@@ -53,10 +53,17 @@ EOF
 
 ## Run SecureNative agent:
 
-[Download](https://github.com/securenative/securenative-java-agent/packages) the latest java agent jar file. Run your java program with the following jvm command:
+[Download](https://mvnrepository.com/artifact/com.securenative.java/securenative-java-agent) the latest java agent jar file (with dependencies). Run your java program with the following jvm command:
 ```bash
 `java -javaagent:/path/to/securenative-agent-with-dependencies.jar -jar /path/to/application.jar`
 ```
+
+### Notes:
+1. Make sure you're using the correct `jar` file! Maven repository contains various versions of the jar file, make sure you've downloaded the one marked **"with-dependencies"**.
+2. To run using JetBrains Intellij add the following command to `run/debug configurstion` --> `VM options`  
+```bash
+-javaagent:/path/to/securenative-agent-with-dependencies.jar -jar /path/to/application.jar
+```   
 
 ## Configuration
 
