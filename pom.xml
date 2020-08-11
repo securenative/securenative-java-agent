@@ -6,7 +6,7 @@
 
     <groupId>com.securenative.java</groupId>
     <artifactId>securenative-java-agent</artifactId>
-    <version>1.4.5</version>
+    <version>1.4.6</version>
 
     <name>${project.artifactId}</name>
     <description>SecureNative Java Agent</description>

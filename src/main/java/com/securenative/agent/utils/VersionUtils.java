@@ -1,24 +1,23 @@
 package com.securenative.agent.utils;
 
-import com.securenative.agent.ResourceStream;
-import com.securenative.agent.ResourceStreamImpl;
-
-import java.io.InputStream;
-import java.util.Properties;
+import com.securenative.agent.snpackage.PackageManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 public class VersionUtils {
-    private static final ResourceStream resourceStream = new ResourceStreamImpl();
-
     public static synchronized String getVersion() {
         String version = null;
 
         // try to load from maven properties first
         try {
-            Properties p = new Properties();
-            InputStream is = resourceStream.getInputStream("/META-INF/maven/com.securenative.java/securenative-java-agent/pom.properties");
-            if (is != null) {
-                p.load(is);
-                version = p.getProperty("version", "");
+            String filePath = "./pom.xml";
+            Document document = PackageManager.readPackageFile(filePath);
+            NodeList parent = document.getElementsByTagName("parent");
+
+            if (parent.getLength() > 0) {
+                version = PackageManager.parseParent(parent, "version");
+            } else {
+                version = document.getElementsByTagName("version").item(0).getTextContent();
             }
         } catch (Exception e) {
             // ignore

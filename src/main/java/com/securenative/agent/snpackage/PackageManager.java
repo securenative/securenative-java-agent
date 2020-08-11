@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class PackageManager {
     private static final Logger logger = Logger.getLogger(PackageManager.class.getName());
-    private static Document readPackageFile(String filePath) {
+    public static Document readPackageFile(String filePath) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Document document = null;
 
@@ -54,7 +54,7 @@ public class PackageManager {
         return dependencies;
     }
 
-    private static String parseParent(NodeList nodeList, String key) {
+    public static String parseParent(NodeList nodeList, String key) {
         Node node = nodeList.item(0);
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element eElement = (Element) node;
