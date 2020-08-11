@@ -29,22 +29,23 @@ public class SecureNativeHTTPClient implements HttpClient {
                     Request authenticatedRequest = request.newBuilder()
                             .header(USER_AGENT_HEADER, USER_AGENT_HEADER_VALUE)
                             .header(VERSION_HEADER, VersionUtils.getVersion())
-                            .header(AUTHORIZATION_HEADER, options.getApiKey()).build();
+                            .header(AUTHORIZATION_HEADER, this.options.getApiKey()).build();
                     return chain.proceed(authenticatedRequest);
                 }).build();
     }
 
-
     @Override
-    public HttpResponse post(String path, String payload) throws IOException {
+    public HttpResponse post(String url, String payload) throws IOException {
         RequestBody body = RequestBody.create(JSON_MEDIA_TYPE, payload);
-
-        String url = String.format("%s/%s", this.options.getApiUrl(), path);
 
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
+                .addHeader(USER_AGENT_HEADER, USER_AGENT_HEADER_VALUE)
+                .addHeader(VERSION_HEADER, VersionUtils.getVersion())
+                .addHeader(AUTHORIZATION_HEADER, this.options.getApiKey())
                 .build();
+
         try (Response response = this.client.newCall(request).execute()) {
             int statusCode = response.code();
             String responseBody = Objects.requireNonNull(response.body()).string();

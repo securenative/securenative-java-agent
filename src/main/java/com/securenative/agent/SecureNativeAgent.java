@@ -25,9 +25,14 @@ public class SecureNativeAgent {
 
             // Set default app name
             System.out.println("Setting app name");
-            config.setAppName(appPkg.getName());
+            try {
+                if (config.getAppName().length() == 0 || config.getAppName().equals("")) {
+                    config.setAppName(appPkg.getName());
+                }
+            } catch (Exception ignored) {}
+
             Logger rootLogger = LogManager.getLogManager().getLogger("");
-            rootLogger.setLevel(Level.FINE); // TODO implement securenative logger
+            rootLogger.setLevel(Level.FINE);
 
             System.out.printf("Loaded SecureNative Agent Configurations %s%n", config.toString());
 

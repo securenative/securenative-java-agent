@@ -50,7 +50,8 @@ public class SecureNativeEventManager implements EventManager {
         logger.fine(String.format("Attempting to send event; %s", body));
         HttpResponse response = this.httpClient.post(url, body);
         if (!response.isOk()) {
-            logger.info(String.format("Secure Native http call failed to end point: %s  with event type %s. adding back to queue.", url, event.getEventType()));
+            logger.info(String.format("SecureNative http call failed to endpoint: %s  with event type %s. adding back to queue.", url, event.getEventType()));
+            logger.info(String.format("Status Code: %s; Response Body: %s; Request Body: %s", response.getStatusCode(), response.getBody(), body));
             throw new IOException(String.valueOf(response.getStatusCode()));
         }
 
